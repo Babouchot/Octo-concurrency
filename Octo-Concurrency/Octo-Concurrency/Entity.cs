@@ -17,6 +17,11 @@ namespace OctoConcurrency
 			taille = 0;
 			world = new World();
 		}
+
+		public Entity(Vector2 position, Vector2 destination) {
+			this.position = position;
+			this.destination = destination;
+		}
 	}
 }
 

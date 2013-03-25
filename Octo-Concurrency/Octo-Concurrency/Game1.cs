@@ -1,5 +1,6 @@
 #region Using Statements
 using System;
+using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,6 +17,8 @@ namespace OctoConcurrency
 	public class Game1 : Game
 	{
 		GraphicsDeviceManager graphics;
+		List<Entity> entities;
+		List<Obstacle> obstacles;
 		SpriteBatch spriteBatch;
 
 		public Game1 ()
