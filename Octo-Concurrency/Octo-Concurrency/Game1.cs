@@ -64,6 +64,9 @@ namespace OctoConcurrency
 			if (GamePad.GetState (PlayerIndex.One).Buttons.Back == ButtonState.Pressed) {
 				Exit ();
 			}
+			/*foreach (Entity e in entities) {
+
+			}*/
 			// TODO: Add your update logic here			
 			base.Update (gameTime);
 		}
@@ -74,7 +77,7 @@ namespace OctoConcurrency
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Draw (GameTime gameTime)
 		{
-			graphics.GraphicsDevice.Clear (Color.CornflowerBlue);
+			graphics.GraphicsDevice.Clear (Color.Black);
 		
 			//TODO: Add your drawing code here
             

@@ -17,7 +17,7 @@ namespace OctoConcurrency
         static void Main()
         {
             game = new Game1();
-            game.Run();
+			game.Run();
         }
     }
 }
