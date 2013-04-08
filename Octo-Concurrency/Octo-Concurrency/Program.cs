@@ -16,6 +16,7 @@ namespace OctoConcurrency
         [STAThread]
         static void Main()
         {
+			Console.Out.WriteLine("Bastien est un gros naab !");
             game = new Game1();
 			game.Run();
         }
