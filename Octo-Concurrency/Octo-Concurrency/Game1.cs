@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Input;
 
 #endregion
 
+
 namespace OctoConcurrency
 {
 	/// <summary>
@@ -17,16 +18,35 @@ namespace OctoConcurrency
 	public class Game1 : Game
 	{
 		GraphicsDeviceManager graphics;
-		List<Entity> entities;
-		List<Obstacle> obstacles;
+
+		//Simulation variables
+		static List<Entity> entities;
+		static List<Obstacle> obstacles;
+		Vector2 objective;
+		const int XOBJ = 400;
+		const int YOBJ = 400;
+
+		//Drawing variables
 		SpriteBatch spriteBatch;
 		Texture2D entityTexture;
+		Texture2D objectiveTexture;
 
 		public Game1 ()
 		{
 			graphics = new GraphicsDeviceManager (this);
 			Content.RootDirectory = "Content";	            
-			graphics.IsFullScreen = true;		
+			graphics.IsFullScreen = true;
+			objective = new Vector2(XOBJ, YOBJ);
+			entities = new List<Entity>();
+			obstacles = new List<Obstacle>();
+		}
+
+		public static List<Entity> Entities {
+			get { return entities; }
+		}
+
+		public static List<Obstacle> Obstacles {
+			get { return obstacles; }
 		}
 
 		/// <summary>
@@ -39,8 +59,12 @@ namespace OctoConcurrency
 		{
 			// TODO: Add your initialization logic here
 			base.Initialize ();
-			entities = new List<Entity>();
-			entities.Add(new Entity(new Vector2(), new Vector2(45, 45)));
+			for (int i = 0; i < 10; ++i) {
+				for (int j = 0; j < 10; ++j)
+					entities.Add(new Entity(new Vector2(i*entityTexture.Width, 
+					                                    j*entityTexture.Height), 
+					                        objective));
+			}
 		}
 
 		/// <summary>
@@ -52,6 +76,7 @@ namespace OctoConcurrency
 			// Create a new SpriteBatch, which can be used to draw textures.
 			spriteBatch = new SpriteBatch (GraphicsDevice);
 			entityTexture = Content.Load<Texture2D>("entity");
+			objectiveTexture = Content.Load<Texture2D>("objectif");
 			//TODO: use this.Content to load your game content here 
 		}
 
@@ -65,9 +90,24 @@ namespace OctoConcurrency
 			if (Keyboard.GetState().IsKeyDown(Keys.Escape)) {
 				Exit ();
 			}
-			foreach (Entity e in entities) {
-				e.Populate();
+
+			if (entities.Count == 0) {
+				Console.WriteLine("Simulation ended successfully");
+				Exit();
 			}
+
+			List<int> toRemove = new List<int>();
+			foreach (Entity e in entities) {
+				if (e.Reach)
+					toRemove.Add(entities.IndexOf(e));
+				else
+					e.Populate();
+			}
+			int offset = 0;
+			foreach (int i in toRemove) {
+				entities.RemoveAt(i-offset++);
+			}
+			Console.WriteLine("nb entity : " + entities.Count);
 			// TODO: Add your update logic here			
 			base.Update (gameTime);
 		}
@@ -78,14 +118,19 @@ namespace OctoConcurrency
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Draw (GameTime gameTime)
 		{
-			graphics.GraphicsDevice.Clear (Color.DarkCyan);
-		
+			graphics.GraphicsDevice.Clear (Color.Black);
 			//TODO: Add your drawing code here
 			base.Draw (gameTime);
 			spriteBatch.Begin();
+			/*if (entities.Count == 0) {
+				spriteBatch.DrawString(new SpriteFont(),"Simulation Successful",
+				                       new Vector2(400, 400),
+				                       Color.White);
+			}*/
 			foreach (Entity e in entities) {
-				spriteBatch.Draw(entityTexture, e.getPosition(), Color.White);
+				spriteBatch.Draw(entityTexture, e.Position, Color.White);
 			}
+			spriteBatch.Draw(objectiveTexture, objective, Color.White);
 			spriteBatch.End();
 		}
 	}

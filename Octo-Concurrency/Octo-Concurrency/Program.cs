@@ -16,7 +16,7 @@ namespace OctoConcurrency
         [STAThread]
         static void Main()
         {
-			Console.Out.WriteLine("Bastien est un gros naab !");
+			Console.Out.WriteLine("Launching ...");
             game = new Game1();
 			game.Run();
         }

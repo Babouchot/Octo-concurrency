@@ -8,7 +8,10 @@ namespace OctoConcurrency
 		private Vector2 position;
 		private Vector2 destination;
 		private float radius;
-		private float maxSpeed;
+		private const float maxSpeed = 1;
+
+		private bool reached;
+
 		//private World world; 
 		//WHY ?
 
@@ -43,6 +46,10 @@ namespace OctoConcurrency
 				destination = value; }
 		}
 
+		public bool Reach {
+			get { return reached; }
+		}
+
 		public Vector2 calculateNextPos(){
 			return calculateNextPos(0);
 		}
@@ -59,7 +66,7 @@ namespace OctoConcurrency
 
 			//Calculate and move down to maxSpeed if needed
 			Vector2 tempMove = destination - position;
-			Console.Out.WriteLine("the line right after this might not work as intended");
+			//Console.Out.WriteLine("the line right after this might not work as intended");
 			if(tempMove.Length() > maxSpeed) {
 				tempMove.Normalize();
 				tempMove *= maxSpeed;
@@ -67,7 +74,6 @@ namespace OctoConcurrency
 
 			//Rotate the move vector by rotationOffset * Pi
 			tempMove = RotateVector2(tempMove, rotationOffset * Math.PI);
-
 			return tempMove;
 		}
 
@@ -81,11 +87,14 @@ namespace OctoConcurrency
 				point.X * sinRadians + point.Y * cosRadians);
 		}
 
-		public Vector2 getPosition(){
-			return position;
-		}
 
 		public Vector2 Populate() {
+			//TODO here is the update of each entity position
+			//Console.WriteLine("Old Position "+Position);
+			position += calculateNextPos();
+			//Console.WriteLine("New position : "+Position);
+			if (position == destination)
+				reached = true;
 			return position;
 
 		}
