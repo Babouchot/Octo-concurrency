@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 
 namespace OctoConcurrency
 {
@@ -79,12 +80,20 @@ namespace OctoConcurrency
 
 			//Rotate the move vector by rotationOffset * Pi
 			tempMove = RotateVector2(tempMove, rotationOffset * Math.PI);
-
-			foreach (Obstacle o in Game1.Obstacles) {
-				if (o.collide(this, tempMove)) {
-					//TODO
+			List<Obstacle> temp = new List<Obstacle>(Game1.Obstacles);
+			temp.AddRange(Game1.Entities);
+			// If you want to see very strange stuff, uncomment the following lines !
+			/*
+			foreach (Obstacle o in temp) {
+				if (!o.Equals(this)) {
+					while (o.collide(this, tempMove)) {
+						//TODO
+						Console.WriteLine("Collision !");
+						tempMove = RotateVector2(tempMove, rotationOffset * Math.PI);
+						rotationOffset += 0.5f;
+					}
 				}
-			}
+			}*/
 			return tempMove;
 		}
 

@@ -31,6 +31,12 @@ namespace OctoConcurrency
 
 		public bool collide(Entity e, Vector2 newPos) {
 			//TODO
+			//Vector2 path = newPos - e.Position;
+			if (coordinates.X < newPos.X 
+			    && newPos.X < coordinates.X + width
+			    && coordinates.Y < newPos.Y
+			    && newPos.Y < coordinates.Y + height)
+				return true;
 			return false;
 		}
 	}
