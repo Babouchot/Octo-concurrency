@@ -7,7 +7,7 @@ namespace OctoConcurrency
 	{
 		private Vector2 position;
 		private Vector2 destination;
-		private int radius;
+		private float radius;
 		private float maxSpeed;
 		//private World world; 
 		//WHY ?
@@ -42,8 +42,8 @@ namespace OctoConcurrency
 				destination = value; }
 		}
 
-		public Vector2 calculateNextMove(){
-			calculateNextMove(0);
+		public Vector2 calculateNextPos(){
+			return calculateNextPos(0);
 		}
 
 		/**
@@ -59,7 +59,10 @@ namespace OctoConcurrency
 			//Calculate and move down to maxSpeed if needed
 			Vector2 tempMove = destination - position;
 			Console.Out.WriteLine("the line right after this might not work as intended");
-			tempMove = tempMove.Length() <= maxSpeed ? tempMove : tempMove.Normalize() * maxSpeed;
+			if(tempMove.Length() > maxSpeed) {
+				tempMove.Normalize();
+				tempMove *= maxSpeed;
+			}
 
 			//Rotate the move vector by rotationOffset * Pi
 			tempMove = RotateVector2(tempMove, rotationOffset * Math.PI);
@@ -67,7 +70,7 @@ namespace OctoConcurrency
 			return tempMove;
 		}
 
-		private static Vector2 RotateVector2(Vector2 point, float radians)
+		private static Vector2 RotateVector2(Vector2 point, double radians)
 		{
 			float cosRadians = (float)Math.Cos(radians);
 			float sinRadians = (float)Math.Sin(radians);
