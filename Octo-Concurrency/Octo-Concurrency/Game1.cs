@@ -63,7 +63,9 @@ namespace OctoConcurrency
 				for (int j = 0; j < 10; ++j)
 					entities.Add(new Entity(new Vector2(i*entityTexture.Width, 
 					                                    j*entityTexture.Height), 
-					                        objective));
+					                        objective,
+					                        entityTexture.Width,
+					                        entityTexture.Height));
 			}
 		}
 
@@ -127,10 +129,10 @@ namespace OctoConcurrency
 				                       new Vector2(400, 400),
 				                       Color.White);
 			}*/
+			spriteBatch.Draw(objectiveTexture, objective, Color.White);
 			foreach (Entity e in entities) {
 				spriteBatch.Draw(entityTexture, e.Position, Color.White);
 			}
-			spriteBatch.Draw(objectiveTexture, objective, Color.White);
 			spriteBatch.End();
 		}
 	}

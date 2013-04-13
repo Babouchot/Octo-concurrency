@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace OctoConcurrency
 {
-	public class Entity
+	public class Entity : OctoConcurrency.Obstacle
 	{
 		private Vector2 position;
 		private Vector2 destination;
@@ -15,7 +15,7 @@ namespace OctoConcurrency
 		//private World world; 
 		//WHY ?
 
-		public Entity ()
+		public Entity () : base(new Vector2(), 0,0)
 		{
 			position = new Vector2();
 			destination = new Vector2();
@@ -23,7 +23,11 @@ namespace OctoConcurrency
 			//world = new World();
 		}
 
-		public Entity(Vector2 position, Vector2 destination) {
+		public Entity(Vector2 position, Vector2 destination, int width, int height) : 
+			base(position,
+			     width,
+		         height) {
+			
 			this.position = position;
 			this.destination = destination;
 		}
@@ -42,7 +46,7 @@ namespace OctoConcurrency
 		public Vector2 Destination{
 			get { return destination; }
 			set { Console.Out.WriteLine("Deprecated fuction ! " +
-				"Bad boy ! (check with Gwen if you don't understad why");
+				"Bad boy ! (check with Gwen if you don't understand why");
 				destination = value; }
 		}
 
@@ -60,6 +64,7 @@ namespace OctoConcurrency
 		 * Rotation Offset should be between -1 and 1
 		 */
 		public Vector2 calculateNextPos(float rotationOffset){
+
 			if(rotationOffset > 1 || rotationOffset < -1){
 				//throw ArgumentException;
 			}
@@ -74,6 +79,12 @@ namespace OctoConcurrency
 
 			//Rotate the move vector by rotationOffset * Pi
 			tempMove = RotateVector2(tempMove, rotationOffset * Math.PI);
+
+			foreach (Obstacle o in Game1.Obstacles) {
+				if (o.collide(this, tempMove)) {
+					//TODO
+				}
+			}
 			return tempMove;
 		}
 
@@ -98,6 +109,11 @@ namespace OctoConcurrency
 			return position;
 
 		}
+
+		/*public bool collide(Entity e, Vector2 newPos) {
+
+		}*/
+
 	}
 }
 
