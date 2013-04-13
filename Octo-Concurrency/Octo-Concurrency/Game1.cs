@@ -20,6 +20,7 @@ namespace OctoConcurrency
 		List<Entity> entities;
 		List<Obstacle> obstacles;
 		SpriteBatch spriteBatch;
+		Texture2D entityTexture;
 
 		public Game1 ()
 		{
@@ -38,7 +39,8 @@ namespace OctoConcurrency
 		{
 			// TODO: Add your initialization logic here
 			base.Initialize ();
-				
+			entities = new List<Entity>();
+			entities.Add(new Entity(new Vector2(), new Vector2(45, 45)));
 		}
 
 		/// <summary>
@@ -49,7 +51,7 @@ namespace OctoConcurrency
 		{
 			// Create a new SpriteBatch, which can be used to draw textures.
 			spriteBatch = new SpriteBatch (GraphicsDevice);
-
+			entityTexture = Content.Load<Texture2D>("entity");
 			//TODO: use this.Content to load your game content here 
 		}
 
@@ -63,9 +65,9 @@ namespace OctoConcurrency
 			if (Keyboard.GetState().IsKeyDown(Keys.Escape)) {
 				Exit ();
 			}
-			/*foreach (Entity e in entities) {
-
-			}*/
+			foreach (Entity e in entities) {
+				e.Populate();
+			}
 			// TODO: Add your update logic here			
 			base.Update (gameTime);
 		}
@@ -79,8 +81,12 @@ namespace OctoConcurrency
 			graphics.GraphicsDevice.Clear (Color.DarkCyan);
 		
 			//TODO: Add your drawing code here
-            
 			base.Draw (gameTime);
+			spriteBatch.Begin();
+			foreach (Entity e in entities) {
+				spriteBatch.Draw(entityTexture, e.getPosition(), Color.White);
+			}
+			spriteBatch.End();
 		}
 	}
 }

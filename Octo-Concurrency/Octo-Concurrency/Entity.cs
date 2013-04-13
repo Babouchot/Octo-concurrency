@@ -25,6 +25,7 @@ namespace OctoConcurrency
 			this.destination = destination;
 		}
 
+
 		public float Radius {
 			get { return radius; }
 			set { radius = value; }
@@ -78,6 +79,15 @@ namespace OctoConcurrency
 			return new Vector2(
 				point.X * cosRadians - point.Y * sinRadians,
 				point.X * sinRadians + point.Y * cosRadians);
+		}
+
+		public Vector2 getPosition(){
+			return position;
+		}
+
+		public Vector2 Populate() {
+			return position;
+
 		}
 	}
 }
