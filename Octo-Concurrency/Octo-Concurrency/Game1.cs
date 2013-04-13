@@ -31,6 +31,9 @@ namespace OctoConcurrency
 		Texture2D entityTexture;
 		Texture2D objectiveTexture;
 
+		//interface variables
+		private bool paused;
+
 		public Game1 ()
 		{
 			graphics = new GraphicsDeviceManager (this);
@@ -39,6 +42,7 @@ namespace OctoConcurrency
 			objective = new Vector2(XOBJ, YOBJ);
 			entities = new List<Entity>();
 			obstacles = new List<Obstacle>();
+			paused = true;
 		}
 
 		public static List<Entity> Entities {
@@ -67,6 +71,7 @@ namespace OctoConcurrency
 					                        entityTexture.Width,
 					                        entityTexture.Height));
 			}
+			Console.WriteLine("Simulation is paused : press 'P' to resume (and to pause again)");
 		}
 
 		/// <summary>
@@ -92,24 +97,31 @@ namespace OctoConcurrency
 			if (Keyboard.GetState().IsKeyDown(Keys.Escape)) {
 				Exit ();
 			}
-
-			if (entities.Count == 0) {
-				Console.WriteLine("Simulation ended successfully");
-				Exit();
+			//TODO trouver une alternative au IsKeyDown type IsKeyPressed
+			if (Keyboard.GetState().IsKeyDown(Keys.P)) {
+				paused = !paused;
 			}
 
-			List<int> toRemove = new List<int>();
-			foreach (Entity e in entities) {
-				if (e.Reach)
-					toRemove.Add(entities.IndexOf(e));
-				else
-					e.Populate();
-			}
-			int offset = 0;
-			foreach (int i in toRemove) {
-				entities.RemoveAt(i-offset++);
-			}
-			Console.WriteLine("nb entity : " + entities.Count);
+			//if (!paused) {
+				if (entities.Count == 0) {
+					Console.WriteLine("Simulation ended successfully");
+					Exit();
+				}
+
+				List<int> toRemove = new List<int>();
+				foreach (Entity e in entities) {
+					if (e.Reach)
+						toRemove.Add(entities.IndexOf(e));
+					else
+						e.Populate();
+				}
+				int offset = 0;
+				foreach (int i in toRemove) {
+					entities.RemoveAt(i-offset++);
+				}
+				Console.WriteLine("nb entity : " + entities.Count);
+			//}
+
 			// TODO: Add your update logic here			
 			base.Update (gameTime);
 		}

@@ -31,7 +31,6 @@ namespace OctoConcurrency
 
 		public bool collide(Entity e, Vector2 newPos) {
 			//TODO
-			//if (e.Position.X+
 			return false;
 		}
 	}
