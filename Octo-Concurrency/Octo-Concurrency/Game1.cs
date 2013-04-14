@@ -19,17 +19,9 @@ namespace OctoConcurrency
 	{
 		GraphicsDeviceManager graphics;
 
-		//Simulation variables
-		static List<Entity> entities;
-		static List<Obstacle> obstacles;
-		Vector2 objective;
-		const int XOBJ = 400;
-		const int YOBJ = 400;
-
 		//Drawing variables
 		SpriteBatch spriteBatch;
-		Texture2D entityTexture;
-		Texture2D objectiveTexture;
+		World world;
 
 		//interface variables
 		private bool paused;
@@ -37,20 +29,13 @@ namespace OctoConcurrency
 		public Game1 ()
 		{
 			graphics = new GraphicsDeviceManager (this);
-			Content.RootDirectory = "Content";	            
-			graphics.IsFullScreen = true;
-			objective = new Vector2(XOBJ, YOBJ);
-			entities = new List<Entity>();
-			obstacles = new List<Obstacle>();
+			Content.RootDirectory = "Content";	
+			graphics.PreferredBackBufferWidth = 800;
+			graphics.PreferredBackBufferHeight = 600;
+			graphics.PreferMultiSampling = false;
+			graphics.IsFullScreen = false;
 			paused = true;
-		}
-
-		public static List<Entity> Entities {
-			get { return entities; }
-		}
-
-		public static List<Obstacle> Obstacles {
-			get { return obstacles; }
+			world = new World(500, 300, 800, 600);
 		}
 
 		/// <summary>
@@ -63,14 +48,6 @@ namespace OctoConcurrency
 		{
 			// TODO: Add your initialization logic here
 			base.Initialize ();
-			for (int i = 0; i < 10; ++i) {
-				for (int j = 0; j < 10; ++j)
-					entities.Add(new Entity(new Vector2(i*entityTexture.Width, 
-					                                    j*entityTexture.Height), 
-					                        objective,
-					                        entityTexture.Width,
-					                        entityTexture.Height));
-			}
 			Console.WriteLine("Simulation is paused : press 'P' to resume (and to pause again)");
 		}
 
@@ -82,8 +59,10 @@ namespace OctoConcurrency
 		{
 			// Create a new SpriteBatch, which can be used to draw textures.
 			spriteBatch = new SpriteBatch (GraphicsDevice);
-			entityTexture = Content.Load<Texture2D>("entity");
-			objectiveTexture = Content.Load<Texture2D>("objectif");
+			Texture2D entityTexture = Content.Load<Texture2D>("entity");
+			Texture2D objectiveTexture = Content.Load<Texture2D>("objectif");
+			Texture2D obstacleTexture = Content.Load<Texture2D>("obstacle");
+			world.loadTextures(entityTexture, obstacleTexture, objectiveTexture);
 			//TODO: use this.Content to load your game content here 
 		}
 
@@ -102,28 +81,12 @@ namespace OctoConcurrency
 				paused = !paused;
 			}
 
-			//if (!paused) {
-				if (entities.Count == 0) {
-					Console.WriteLine("Simulation ended successfully");
-					Exit();
-				}
+			if(!paused){
+				world.updateWorld(gameTime.ElapsedGameTime.Milliseconds);
+				//I moved that one up here hopping it will stop the gameTime incrementation when paused
+				base.Update (gameTime);
+			}
 
-				List<int> toRemove = new List<int>();
-				foreach (Entity e in entities) {
-					if (e.Reach)
-						toRemove.Add(entities.IndexOf(e));
-					else
-						e.Populate();
-				}
-				int offset = 0;
-				foreach (int i in toRemove) {
-					entities.RemoveAt(i-offset++);
-				}
-				Console.WriteLine("nb entity : " + entities.Count);
-			//}
-
-			// TODO: Add your update logic here			
-			base.Update (gameTime);
 		}
 
 		/// <summary>
@@ -132,19 +95,19 @@ namespace OctoConcurrency
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Draw (GameTime gameTime)
 		{
-			graphics.GraphicsDevice.Clear (Color.Black);
+			graphics.GraphicsDevice.Clear (Color.White);
 			//TODO: Add your drawing code here
 			base.Draw (gameTime);
 			spriteBatch.Begin();
-			/*if (entities.Count == 0) {
-				spriteBatch.DrawString(new SpriteFont(),"Simulation Successful",
+
+			world.draw(spriteBatch);
+
+			if (world.Entities.Count == 0) {
+				/*spriteBatch.DrawString(new SpriteFont(),"Simulation Successful",
 				                       new Vector2(400, 400),
-				                       Color.White);
-			}*/
-			spriteBatch.Draw(objectiveTexture, objective, Color.White);
-			foreach (Entity e in entities) {
-				spriteBatch.Draw(entityTexture, e.Position, Color.White);
+				                       Color.White);*/
 			}
+
 			spriteBatch.End();
 		}
 	}
