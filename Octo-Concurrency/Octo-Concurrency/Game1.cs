@@ -43,7 +43,7 @@ namespace OctoConcurrency
 		//Initialize or reinitialize the game
 		private void separatedInitialization(){
 			paused = true;
-			world = new World(300, 200, 600, 400, 15);
+			world = new World(300, 200, 600, 400, 40);
 		}
 
 		/// <summary>
@@ -70,6 +70,7 @@ namespace OctoConcurrency
 			Texture2D entityTexture = Content.Load<Texture2D>("entity");
 			Texture2D objectiveTexture = Content.Load<Texture2D>("objectif");
 			Texture2D obstacleTexture = Content.Load<Texture2D>("obstacle");
+
 			world.loadTextures(entityTexture, obstacleTexture, objectiveTexture);
 			//TODO: use this.Content to load your game content here 
 		}
@@ -99,6 +100,7 @@ namespace OctoConcurrency
 				base.Update (gameTime);
 			}
 
+			Console.Out.WriteLine("FPS : " + (1.0f/gameTime.ElapsedGameTime.Milliseconds)*1000);
 		}
 
 		/// <summary>

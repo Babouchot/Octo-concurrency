@@ -8,18 +8,18 @@ namespace OctoConcurrency
 	public class Entity : OctoConcurrency.Obstacle
 	{
 		private Vector2 position;
-		private Vector2 destination;
+		private Node destination;
 		private float radius;
 		private float maxSpeed;
 
-		public Entity (Vector2 dest)
+		public Entity (Node dest)
 		{
 			position = new Vector2();
 			radius = 1;
 			destination = dest;
 		}
 
-		public Entity(Vector2 dest, Vector2 position, int rad = 20, float maxiSpeed = 0.1f) {
+		public Entity(Node dest, Vector2 position, int rad = 20, float maxiSpeed = 0.1f) {
 			this.position = position;
 			radius = rad;
 			this.destination = dest;
@@ -37,12 +37,13 @@ namespace OctoConcurrency
 			set { position = value; }
 		}
 
-		public Vector2 Destination {
+		public Node Destination {
 			get { return destination; }
+			set { destination = value; }
 		}
 
 		public bool destinationReached(){
-			return (destination - position).Length() < radius;
+			return (destination.Position - position).Length() < radius;
 		}
 
 		/**
@@ -58,7 +59,7 @@ namespace OctoConcurrency
 			}
 
 			//Calculate and move down to maxSpeed if needed
-			Vector2 tempMove = destination - position;
+			Vector2 tempMove = destination.Position - position;
 			//Console.Out.WriteLine("the line right after this might not work as intended");
 			if(tempMove.Length() > maxSpeed * timeSinceLastUpdate) {
 				tempMove.Normalize();
@@ -77,10 +78,10 @@ namespace OctoConcurrency
 		}
 
 		//Check if the moving entity will collide with this
-		public bool collide(Entity e, Vector2 newPos) {
+		public bool collide(Vector2 oldPos, Vector2 newPos) {
 			if (Vector2.Distance(position, newPos) < radius){
 				return true;
-			} else if (Vector2.Distance(position, e.Position) < radius && Vector2.Distance(position, newPos) < radius){
+			} else if (Vector2.Distance(position, oldPos) < radius && Vector2.Distance(position, newPos) < radius){
 				return true;
 			}
 			return false;

@@ -6,7 +6,7 @@ namespace OctoConcurrency
 {
 	public interface Obstacle
 	{
-		bool collide(Entity e, Vector2 newPos);
+		bool collide(Vector2 oldPos, Vector2 newPos);
 		void draw(SpriteBatch spritebatch, Texture2D texture);
 	}
 }

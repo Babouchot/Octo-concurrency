@@ -17,17 +17,17 @@ namespace OctoConcurrency
 			radius = rad;
 		}
 
-		public bool collide(Entity ent, Vector2 newPos){
+		public bool collide(Vector2 oldPos, Vector2 newPos){
 			Vector2 intersection;
 			//Radius not taken into account here, it should be, have to figure out a way to do that...
-			return GeometryTools.Intersects2D(start, end, ent.Position, newPos, out intersection);
+			return GeometryTools.Intersects2D(start, end, oldPos, newPos, out intersection);
 		}
 
 		public void draw(SpriteBatch spritebatch, Texture2D texture){
-			Texture2D blank = new Texture2D(spritebatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
-			blank.SetData(new[]{Color.White});
 
-			GeometryTools.DrawLine(spritebatch, blank, radius, Color.Red, start, end);
+			Texture2D wallText = new Texture2D(spritebatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+			wallText.SetData(new[]{Color.White});
+			GeometryTools.DrawLine(spritebatch, wallText, radius, Color.Red, start, end);
 		}
 		
 
