@@ -48,13 +48,13 @@ namespace OctoConcurrency
 						Console.Out.WriteLine("remaining : "+remainingNodes.Count);
 						if(!world.isCollidingWithObstacle(outNode.Position, inNode.Position)){
 							//Chaque node accessible est mise de coté pour le prochain traitement
-							toProcessLater.Add(inNode);
+							if(toProcessLater.IndexOf(inNode) < 0){
+								toProcessLater.Add(inNode);
+								toRemove.Add(inNode);
+							}
 							//Chaque node accessible se voit ajouté outNode a sa liste de nodes sortantes
 							inNode.OutNodes.Add(outNode);
 							//On se prépare a retirer la node trouvée de remainingNode
-							toRemove.Add(inNode);
-
-							Console.Out.WriteLine("in da if");
 						}
 					}
 					nodes.Add(outNode);

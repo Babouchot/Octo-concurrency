@@ -9,8 +9,8 @@ namespace OctoConcurrency
 	{
 		private Vector2 position;
 		private Node destination;
-		private float radius;
-		private float maxSpeed;
+		private double radius;
+		private double maxSpeed;
 
 		public Entity (Node dest)
 		{
@@ -27,7 +27,7 @@ namespace OctoConcurrency
 		}
 
 
-		public float Radius {
+		public double Radius {
 			get { return radius; }
 			set { radius = value; }
 		}
@@ -51,7 +51,7 @@ namespace OctoConcurrency
 		 * The calculated move will be redirected according to the rotationOffset ( 0 = none 1 = half turn)
 		 * Rotation Offset should be between 0 and 2
 		 */
-		public Vector2 calculateNextPos(float rotationOffset, float timeSinceLastUpdate){
+		public Vector2 calculateNextPos(float rotationOffset, double timeSinceLastUpdate){
 
 			if(rotationOffset > 1 || rotationOffset < -1){
 				Console.Out.WriteLine("rotation out of bound");
@@ -63,12 +63,12 @@ namespace OctoConcurrency
 			//Console.Out.WriteLine("the line right after this might not work as intended");
 			if(tempMove.Length() > maxSpeed * timeSinceLastUpdate) {
 				tempMove.Normalize();
-				tempMove *= maxSpeed * timeSinceLastUpdate;
+				tempMove *= (float) (maxSpeed * timeSinceLastUpdate);
 			}
 
 			//Rotate the move vector by rotationOffset * Pi
 			tempMove = GeometryTools.RotateVector2(tempMove, rotationOffset * Math.PI);
-
+			Console.Out.WriteLine("move : x " + tempMove.X + " y " + tempMove.Y);
 			return tempMove + position;
 		}
 
