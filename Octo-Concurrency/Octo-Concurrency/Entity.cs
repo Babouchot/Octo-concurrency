@@ -53,6 +53,7 @@ namespace OctoConcurrency
 		public Vector2 calculateNextPos(float rotationOffset, float timeSinceLastUpdate){
 
 			if(rotationOffset > 1 || rotationOffset < -1){
+				Console.Out.WriteLine("rotation out of bound");
 				return new Vector2(0,0);
 			}
 
@@ -72,7 +73,7 @@ namespace OctoConcurrency
 
 		//Move the entity to its new position
 		public void move(Vector2 newPos){
-			this.Position = newPos;
+			position = newPos;
 		}
 
 		//Check if the moving entity will collide with this
@@ -86,7 +87,8 @@ namespace OctoConcurrency
 		}
 
 		public void draw(SpriteBatch spritebatch, Texture2D texture){
-			spritebatch.Draw (texture, position, Color.White);
+			Vector2 adjustedPos = new Vector2(position.X - texture.Width/2, position.Y - texture.Height/2);
+			spritebatch.Draw (texture, adjustedPos, Color.White);
 		}
 	}
 }

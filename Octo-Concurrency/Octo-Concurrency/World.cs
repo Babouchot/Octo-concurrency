@@ -20,28 +20,39 @@ namespace OctoConcurrency
 		{
 			entities = new List<Entity>();
 			obstacles = new List<Obstacle>();
+			obstaclesAndEntities = new List<Obstacle>();
+
 			objective = new Vector2(xObjective, yObjective);
 			size = new Vector2(width,height);
 
-			//Add some entities to the world
 			Vector2 destination = new Vector2(xObjective, yObjective);
-			Vector2 pos;
+
 			Random r = new Random();
-			obstaclesAndEntities = new List<Obstacle>();
 
 			//Add some obstacles
-			//
-			//
+
+			Wall wall;
+			Vector2 startWall, endWall;
+			for(int i = 0; i < 4; ++i){
+				startWall = new Vector2(r.Next((int)size.X), r.Next((int)size.Y));
+				endWall = new Vector2(r.Next((int)size.X), r.Next((int)size.Y));
+				wall = new Wall(startWall, endWall);
+				obstacles.Add(wall);
+			}
 
 			obstaclesAndEntities.AddRange(obstacles);
 
+			//Add some entities to the world
+
+			Entity ent;
+			Vector2 pos;
 			for(int i = 0; i < nbEntities; ++i){
 
 				pos = new Vector2(r.Next((int)size.X), r.Next((int)size.Y));
-				Entity ent = new Entity(destination, pos);
+				ent = new Entity(destination, pos);
 				while(isColliding(ent, ent.Position)){
 					pos = new Vector2(r.Next((int)size.X), r.Next((int)size.Y));
-					ent = new Entity(destination, pos);
+					ent = new Entity(destination, pos, 10, 0.005f);
 				}
 				entities.Add(ent);
 				obstaclesAndEntities.Add(ent);
@@ -67,14 +78,16 @@ namespace OctoConcurrency
 		 **/
 		public void updateWorld(float timeSinceLastUpdate) {
 
-			float rotation = 0.0f;
-			bool left = false;
+			float rotation;
+			bool left;
 			Vector2 nextPos;
 
 			List<Entity> toRemove = new List<Entity>();
-
+			int entCount = 0;
 			foreach (Entity ent in entities){
 
+				rotation = 0.0f;
+				left = false;
 				//Try to move in several directions, once right, once left, the further right...
 				nextPos = ent.calculateNextPos(rotation, timeSinceLastUpdate);
 				while(nextPos.Length() > 0 && isColliding(ent, nextPos)){
@@ -90,12 +103,15 @@ namespace OctoConcurrency
 				if(nextPos.Length() == 0){
 					nextPos = ent.Position;
 				}
+				Console.Out.WriteLine("entity : " + entCount + " rotation : " + rotation);
 				ent.move(nextPos);
 
 				//Destination reached, remove the entity from the world
 				if(ent.destinationReached()){
 					toRemove.Add(ent);
 				}
+
+				++entCount;
 			}
 
 			foreach(Entity ent in toRemove){
@@ -135,7 +151,8 @@ namespace OctoConcurrency
 				ent.draw(spritebatch, entityTexture);
 			}
 
-			spritebatch.Draw(objectiveTexture, objective, Color.White);
+			Vector2 adjustedObj = new Vector2(objective.X - objectiveTexture.Width/2, objective.Y - objectiveTexture.Height/2);
+			spritebatch.Draw(objectiveTexture, adjustedObj, Color.White);
 		}
 
 	}

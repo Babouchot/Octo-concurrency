@@ -30,12 +30,20 @@ namespace OctoConcurrency
 		{
 			graphics = new GraphicsDeviceManager (this);
 			Content.RootDirectory = "Content";	
-			graphics.PreferredBackBufferWidth = 800;
-			graphics.PreferredBackBufferHeight = 600;
+			graphics.PreferredBackBufferWidth = 600;
+			graphics.PreferredBackBufferHeight = 400;
 			graphics.PreferMultiSampling = false;
 			graphics.IsFullScreen = false;
+
+			graphics.ApplyChanges();
+
+			separatedInitialization();
+		}
+
+		//Initialize or reinitialize the game
+		private void separatedInitialization(){
 			paused = true;
-			world = new World(500, 300, 800, 600);
+			world = new World(300, 200, 600, 400, 15);
 		}
 
 		/// <summary>
@@ -81,6 +89,10 @@ namespace OctoConcurrency
 				paused = !paused;
 			}
 
+			if(Keyboard.GetState().IsKeyDown(Keys.R)){
+				separatedInitialization();
+				LoadContent();
+			}
 			if(!paused){
 				world.updateWorld(gameTime.ElapsedGameTime.Milliseconds);
 				//I moved that one up here hopping it will stop the gameTime incrementation when paused

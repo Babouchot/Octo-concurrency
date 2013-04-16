@@ -11,7 +11,7 @@ namespace OctoConcurrency
 		private Vector2 end;
 		private float radius;
 
-		public Wall(Vector2 startPoint, Vector2 endPoint, float rad){
+		public Wall(Vector2 startPoint, Vector2 endPoint, float rad = 1){
 			start = startPoint;
 			end = endPoint;
 			radius = rad;
@@ -24,7 +24,10 @@ namespace OctoConcurrency
 		}
 
 		public void draw(SpriteBatch spritebatch, Texture2D texture){
-			Console.Out.WriteLine("Wall colinding test, rad = " + radius);
+			Texture2D blank = new Texture2D(spritebatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+			blank.SetData(new[]{Color.White});
+
+			GeometryTools.DrawLine(spritebatch, blank, radius, Color.Red, start, end);
 		}
 		
 
