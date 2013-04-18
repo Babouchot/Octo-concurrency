@@ -5,6 +5,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace OctoConcurrency
 {
+	/**
+	 * The wall class <br>
+	 * A Wall object is a line shaped obstacle
+	 **/
 	public class Wall : Obstacle
 	{
 		private Vector2 start;
@@ -17,12 +21,18 @@ namespace OctoConcurrency
 			radius = rad;
 		}
 
+		/**
+		 * Check if motion will collide with the wall
+		 **/
 		public bool collide(Vector2 oldPos, Vector2 newPos){
 			Vector2 intersection;
 			//Radius not taken into account here, it should be, have to figure out a way to do that...
 			return GeometryTools.Intersects2D(start, end, oldPos, newPos, out intersection);
 		}
 
+		/**
+		 * Draw the wall as a line
+		 **/
 		public void draw(SpriteBatch spritebatch, Texture2D texture){
 
 			Texture2D wallText = new Texture2D(spritebatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);

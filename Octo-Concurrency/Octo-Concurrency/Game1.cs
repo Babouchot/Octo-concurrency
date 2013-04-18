@@ -40,7 +40,9 @@ namespace OctoConcurrency
 			separatedInitialization();
 		}
 
-		//Initialize or reinitialize the game
+		/**
+		 * Initialize or reinitialize the game
+		 **/
 		private void separatedInitialization(){
 			paused = true;
 			world = new World(300, 200, 600, 400, 40);
@@ -90,6 +92,7 @@ namespace OctoConcurrency
 				paused = !paused;
 			}
 
+			// Reset l'état de la simulation
 			if(Keyboard.GetState().IsKeyDown(Keys.R)){
 				separatedInitialization();
 				LoadContent();

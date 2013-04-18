@@ -5,6 +5,11 @@ using System.Collections.Generic;
 
 namespace OctoConcurrency
 {
+	/**
+	 * The class representing the simulation world <br>
+	 * Contains all the entities and obstacles and hold the objective location <br>
+	 * Handle all the game update calculation and the game logic
+	 **/
 	public class World
 	{
 		private List<Entity> entities;
@@ -59,6 +64,7 @@ namespace OctoConcurrency
 					ent = new Entity(destination, pos, 10, 0.005f);
 				}
 				entities.Add(ent);
+				//find the first goal of each entities
 				ent.Destination = pathFinder.findClosestSubGoal(ent.Position, this);
 			}
 
@@ -70,7 +76,9 @@ namespace OctoConcurrency
 			get { return objective;}
 		}
 
-
+		/**
+		 * Load the texture the world will use to draw itelf
+		 **/
 		public void loadTextures(Texture2D entity, Texture2D wall, Texture2D objecti){
 			entityTexture = entity;
 			obstacleTexture = wall;
@@ -165,6 +173,9 @@ namespace OctoConcurrency
 			get { return size; }
 		}
 
+		/**
+		 * Draw all the world elements
+		 **/
 		public void draw(SpriteBatch spritebatch){
 
 			foreach (Obstacle obs in obstacles){

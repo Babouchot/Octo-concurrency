@@ -5,20 +5,22 @@ using System.Collections.Generic;
 
 namespace OctoConcurrency
 {
+	/**
+	 * Entity class, represent a moving, living entity from the game
+	 **/
 	public class Entity : OctoConcurrency.Obstacle
 	{
 		private Vector2 position;
 		private Node destination;
+		//The radius of the entity, used to know how mush space the entity occupies
 		private double radius;
 		private double maxSpeed;
 
-		public Entity (Node dest)
-		{
-			position = new Vector2();
-			radius = 1;
-			destination = dest;
-		}
 
+		/**
+		 * Create a new entity with the given parameters
+		 * The default radius and maxiSpeed may change
+		 **/
 		public Entity(Node dest, Vector2 position, int rad = 20, float maxiSpeed = 0.1f) {
 			this.position = position;
 			radius = rad;
@@ -42,13 +44,17 @@ namespace OctoConcurrency
 			set { destination = value; }
 		}
 
+		/**
+		 * Check if the entity is on its destination <br>
+		 * Return true if the destination has been reached
+		 **/
 		public bool destinationReached(){
 			return (destination.Position - position).Length() < radius;
 		}
 
 		/**
-		 * Calculate the next position
-		 * The calculated move will be redirected according to the rotationOffset ( 0 = none 1 = half turn)
+		 * Calculate the next position <br>
+		 * The calculated move will be redirected according to the rotationOffset ( 0 = none 1 = half turn) <br>
 		 * Rotation Offset should be between 0 and 2
 		 */
 		public Vector2 calculateNextPos(float rotationOffset, double timeSinceLastUpdate){
@@ -72,12 +78,16 @@ namespace OctoConcurrency
 			return tempMove + position;
 		}
 
-		//Move the entity to its new position
+		/**
+		 * Move the entity to its new position
+		 **/
 		public void move(Vector2 newPos){
 			position = newPos;
 		}
 
-		//Check if the moving entity will collide with this
+		/*
+		 * Check if the moving entity will collide with this
+		 **/
 		public bool collide(Vector2 oldPos, Vector2 newPos) {
 			if (Vector2.Distance(position, newPos) < radius){
 				return true;
@@ -87,6 +97,9 @@ namespace OctoConcurrency
 			return false;
 		}
 
+		/**
+		 * Draw the entity at its position with the given texture
+		 **/
 		public void draw(SpriteBatch spritebatch, Texture2D texture){
 			Vector2 adjustedPos = new Vector2(position.X - texture.Width/2, position.Y - texture.Height/2);
 			spritebatch.Draw (texture, adjustedPos, Color.White);
