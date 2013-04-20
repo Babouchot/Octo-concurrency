@@ -14,7 +14,7 @@ namespace OctoConcurrency
 		private Node destination;
 		//The radius of the entity, used to know how mush space the entity occupies
 		private double radius;
-		private double maxSpeed;
+		private float maxSpeed;
 
 
 		/**
@@ -64,17 +64,22 @@ namespace OctoConcurrency
 				return new Vector2(0,0);
 			}
 
-			//Calculate and move down to maxSpeed if needed
+			//Calculate and reduce to maxSpeed if needed
 			Vector2 tempMove = destination.Position - position;
-			//Console.Out.WriteLine("the line right after this might not work as intended");
-			if(tempMove.Length() > maxSpeed * timeSinceLastUpdate) {
-				tempMove.Normalize();
-				tempMove *= (float) (maxSpeed * timeSinceLastUpdate);
-			}
 
+			tempMove *= (float)timeSinceLastUpdate;
 			//Rotate the move vector by rotationOffset * Pi
 			tempMove = GeometryTools.RotateVector2(tempMove, rotationOffset * Math.PI);
-			Console.Out.WriteLine("move : x " + tempMove.X + " y " + tempMove.Y);
+
+			if(tempMove.Length() > maxSpeed){
+
+				tempMove.Normalize();
+				tempMove *= (float)timeSinceLastUpdate * maxSpeed;
+			}
+
+
+
+
 			return tempMove + position;
 		}
 

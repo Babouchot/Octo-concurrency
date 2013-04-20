@@ -55,13 +55,13 @@ namespace OctoConcurrency
 			for(int i = 0; i < nbEntities; ++i){
 
 				pos = new Vector2(r.Next((int)size.X), r.Next((int)size.Y));
-				ent = new Entity(destination, pos);
+				ent = new Entity(destination, pos, 10);
 
 				while(isCollidingWithObstacle(ent.Position, ent.Position) 
 				      || isCollidingWithEntities(ent, ent.Position)){
 
 					pos = new Vector2(r.Next((int)size.X), r.Next((int)size.Y));
-					ent = new Entity(destination, pos, 10, 0.005f);
+					ent = new Entity(destination, pos, 10);
 				}
 				entities.Add(ent);
 				//find the first goal of each entities
