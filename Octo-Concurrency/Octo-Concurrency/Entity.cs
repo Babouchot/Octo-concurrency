@@ -49,7 +49,16 @@ namespace OctoConcurrency
 		 * Return true if the destination has been reached
 		 **/
 		public bool destinationReached(){
-			return (destination.Position - position).Length() < radius;
+			if(destination.OutNodes.Count==0){
+
+				return (destination.Position - position).Length() < radius;
+
+			} else {
+
+				return (destination.Position - position).Length() < radius/4;
+
+			}
+
 		}
 
 		/**
