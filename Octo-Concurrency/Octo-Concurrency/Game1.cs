@@ -45,7 +45,7 @@ namespace OctoConcurrency
 		 **/
 		private void separatedInitialization(){
 			paused = true;
-			world = new World(300, 200, 600, 400, 40);
+			world = new World(300, 200, 600, 400, 60);
 		}
 
 		/// <summary>

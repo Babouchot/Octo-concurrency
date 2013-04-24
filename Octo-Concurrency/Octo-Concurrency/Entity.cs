@@ -66,7 +66,7 @@ namespace OctoConcurrency
 
 			} else {
 
-				return (destination.Position - position).Length() < radius/4;
+				return (destination.Position - position).Length() < radius/10;
 
 			}
 
