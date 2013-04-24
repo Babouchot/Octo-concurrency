@@ -98,6 +98,11 @@ namespace OctoConcurrency
 
 			foreach (Entity ent in entities){
 
+				//If stuck relauch the pathfinding to find another way
+				if(ent.checkIfStuck()){
+					ent.Destination = pathFinder.findClosestSubGoal(ent.Position, this, ent.Destination);
+				}
+
 				rotation = 0.0f;
 				left = false;
 				//Try to move in several directions, once right, once left, the further right...
@@ -184,6 +189,11 @@ namespace OctoConcurrency
 
 			foreach (Entity ent in entities){
 				ent.draw(spritebatch, entityTexture);
+				//debugDraw for the stuck problem
+				if(ent.checkIfStuck()){
+					ent.debugDrawDestination(spritebatch);
+				}
+
 			}
 
 			Vector2 adjustedObj = new Vector2(objective.X - objectiveTexture.Width/2, objective.Y - objectiveTexture.Height/2);

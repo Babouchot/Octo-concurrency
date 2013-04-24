@@ -76,11 +76,11 @@ namespace OctoConcurrency
 		/**
 		 * Find the closest reachable node from the position
 		 **/
-		public Node findClosestSubGoal(Vector2 pos, World world){
+		public Node findClosestSubGoal(Vector2 pos, World world, Node lastGoal=null){
 			Node closest = objective;
 
 			foreach( Node nod in nodes){
-				if(!world.isCollidingWithObstacle(pos, nod.Position) 
+				if(nod != lastGoal && !world.isCollidingWithObstacle(pos, nod.Position) 
 				   && (nod.Position - pos).Length() < (closest.Position - pos).Length()){
 					closest = nod;
 				}

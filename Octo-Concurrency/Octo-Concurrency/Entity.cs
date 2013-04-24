@@ -15,6 +15,9 @@ namespace OctoConcurrency
 		//The radius of the entity, used to know how mush space the entity occupies
 		private double radius;
 		private float maxSpeed;
+	
+		private int nbLastMoves = 20;
+		private List<Vector2> lastMoves;
 
 
 		/**
@@ -26,6 +29,8 @@ namespace OctoConcurrency
 			radius = rad;
 			this.destination = dest;
 			maxSpeed = maxiSpeed;
+
+			lastMoves = new List<Vector2>(nbLastMoves);
 		}
 
 
@@ -41,7 +46,8 @@ namespace OctoConcurrency
 
 		public Node Destination {
 			get { return destination; }
-			set { destination = value; }
+			//If the destination changes, reset the stuck checking List to avoid a false stuck detection
+			set { destination = value; lastMoves.Clear(); }
 		}
 
 		/**
@@ -49,6 +55,11 @@ namespace OctoConcurrency
 		 * Return true if the destination has been reached
 		 **/
 		public bool destinationReached(){
+
+			if(destination == null){
+				return false;
+			}
+
 			if(destination.OutNodes.Count==0){
 
 				return (destination.Position - position).Length() < radius;
@@ -86,17 +97,35 @@ namespace OctoConcurrency
 				tempMove *= (float)timeSinceLastUpdate * maxSpeed;
 			}
 
-
-
-
 			return tempMove + position;
+		}
+
+
+		/**
+		 * Check if the entity is stuck by calculating the total motion ober the last X move <br>
+		 * And by cheking if it is to small
+		 **/
+		public bool checkIfStuck(){
+
+			Vector2 globalMove;
+			foreach( Vector2 move in lastMoves ){
+				globalMove += move;
+			}
+			return lastMoves.Count >= nbLastMoves/2 && globalMove.Length() < radius / 2;
 		}
 
 		/**
 		 * Move the entity to its new position
 		 **/
 		public void move(Vector2 newPos){
+
+			Vector2 move = newPos - position;
+			if(lastMoves.Count >= nbLastMoves){
+				lastMoves.RemoveAt(0);
+			}
+			lastMoves.Add(move);
 			position = newPos;
+
 		}
 
 		/*
@@ -117,6 +146,14 @@ namespace OctoConcurrency
 		public void draw(SpriteBatch spritebatch, Texture2D texture){
 			Vector2 adjustedPos = new Vector2(position.X - texture.Width/2, position.Y - texture.Height/2);
 			spritebatch.Draw (texture, adjustedPos, Color.White);
+		}
+
+		public void debugDrawDestination(SpriteBatch spritebatch){
+			//debug draw for the pathfinding
+			
+			Texture2D wallText = new Texture2D(spritebatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+			wallText.SetData(new[]{Color.White});
+			GeometryTools.DrawLine(spritebatch, wallText, 1, Color.Blue, position, destination.Position);
 		}
 	}
 }
