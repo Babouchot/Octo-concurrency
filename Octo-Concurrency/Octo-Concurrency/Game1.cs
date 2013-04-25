@@ -30,8 +30,8 @@ namespace OctoConcurrency
 		{
 			graphics = new GraphicsDeviceManager (this);
 			Content.RootDirectory = "Content";	
-			graphics.PreferredBackBufferWidth = 800;
-			graphics.PreferredBackBufferHeight = 600;
+			graphics.PreferredBackBufferWidth = 600;
+			graphics.PreferredBackBufferHeight = 400;
 			graphics.PreferMultiSampling = false;
 			graphics.IsFullScreen = false;
 
