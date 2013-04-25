@@ -107,7 +107,7 @@ namespace OctoConcurrency
 		 **/
 		public bool checkIfStuck(){
 
-			Vector2 globalMove;
+			Vector2 globalMove = Vector2.Zero;
 			foreach( Vector2 move in lastMoves ){
 				globalMove += move;
 			}
