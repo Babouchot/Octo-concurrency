@@ -30,8 +30,8 @@ namespace OctoConcurrency
 		{
 			graphics = new GraphicsDeviceManager (this);
 			Content.RootDirectory = "Content";	
-			graphics.PreferredBackBufferWidth = 600;
-			graphics.PreferredBackBufferHeight = 400;
+			graphics.PreferredBackBufferWidth = 800;
+			graphics.PreferredBackBufferHeight = 600;
 			graphics.PreferMultiSampling = false;
 			graphics.IsFullScreen = false;
 
@@ -45,7 +45,7 @@ namespace OctoConcurrency
 		 **/
 		private void separatedInitialization(){
 			paused = true;
-			world = new World(300, 200, 600, 400, 60);
+			world = new World(300, 200, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight, 60);
 		}
 
 		/// <summary>
