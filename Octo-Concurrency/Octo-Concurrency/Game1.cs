@@ -25,6 +25,7 @@ namespace OctoConcurrency
 
 		//interface variables
 		private bool paused;
+		private bool isDown;
 
 		public Game1 ()
 		{
@@ -89,6 +90,10 @@ namespace OctoConcurrency
 			}
 			//TODO trouver une alternative au IsKeyDown type IsKeyPressed
 			if (Keyboard.GetState().IsKeyDown(Keys.P)) {
+				isDown = true;
+			}
+			if(isDown && !Keyboard.GetState().IsKeyDown(Keys.P)) {
+				isDown = false;
 				paused = !paused;
 			}
 
@@ -116,7 +121,6 @@ namespace OctoConcurrency
 			//TODO: Add your drawing code here
 			base.Draw (gameTime);
 			spriteBatch.Begin();
-
 			world.draw(spriteBatch);
 
 			if (world.Entities.Count == 0) {
