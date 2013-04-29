@@ -100,7 +100,7 @@ namespace OctoConcurrency
 			if(!paused){
 				world.updateWorld(gameTime.ElapsedGameTime.Milliseconds);
 				//I moved that one up here hopping it will stop the gameTime incrementation when paused
-				Console.Out.WriteLine("FPS : " + (1.0f/gameTime.ElapsedGameTime.Milliseconds)*1000);
+				//Console.Out.WriteLine("FPS : " + (1.0f/gameTime.ElapsedGameTime.Milliseconds)*1000);
 				base.Update (gameTime);
 			}
 
