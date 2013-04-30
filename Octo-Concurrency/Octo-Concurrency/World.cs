@@ -22,6 +22,8 @@ namespace OctoConcurrency
 		private Texture2D objectiveTexture;
 		private List<Thread> threads;
 
+		public List<Entity> entitiesToRemove;
+
 		private PathFinder pathFinder;
 
 		public World (int xObjective, int yObjective, int width = 800, int height = 800, int nbEntities = 30)
@@ -33,6 +35,8 @@ namespace OctoConcurrency
 			size = new Vector2(width,height);
 
 			Node destination = new Node(new Vector2(xObjective, yObjective));
+
+			entitiesToRemove = new List<Entity>();
 
 			Random r = new Random();
 
@@ -87,6 +91,21 @@ namespace OctoConcurrency
 			Console.WriteLine("Threads started");
 		}
 
+		public void stopThreads(){
+			foreach(Entity ent in entities){
+				ent.requestStop();
+			}
+
+			foreach(Thread th in threads){
+				th.Abort();
+			}
+
+			threads.Clear();
+			entities.Clear();
+
+			Console.WriteLine("Threads stopped");
+		}
+
 		public Vector2 Objective {
 			get { return objective;}
 		}
@@ -104,6 +123,12 @@ namespace OctoConcurrency
 		 * Update the game world by moving each of the entities toward their destination
 		 **/
 		public void updateWorld(float timeSinceLastUpdate) {
+
+			foreach(Entity ent in entitiesToRemove){
+				entities.Remove(ent);
+			}
+
+			entitiesToRemove.Clear();
 
 			/*foreach (Entity ent in entities){
 				ent.autonomousUpdate();			

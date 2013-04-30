@@ -2,6 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace OctoConcurrency
 {
@@ -223,20 +224,21 @@ namespace OctoConcurrency
 					
 					if(toRemove){
 						//remove Entity from the list (in a secure fashion) and stop Thread
-						int index = Game1.world.Entities.IndexOf(this);
-						//Game1.world.Entities.Remove(this);
-						Game1.world.Threads.RemoveAt(index);
+						//int index = Game1.world.Entities.IndexOf(this);
+						//Game1.world.entitiesToRemove.Add(this);
+						//Game1.world.Threads.RemoveAt(index);
 					}
 					
 					//this.draw(Game1.spriteBatch, Game1.world.EntityTexture);
 
 				}
 			
+				Thread.Sleep(50);
 			}
 		}
 
 		public bool active(){
-			return toRemove;
+			return !toRemove;
 		}
 		public void requestStop(){
 			toRemove = true;

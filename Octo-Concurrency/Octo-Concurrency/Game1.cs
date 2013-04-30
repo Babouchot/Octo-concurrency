@@ -21,7 +21,7 @@ namespace OctoConcurrency
 
 		//Static variables
 		public static SpriteBatch spriteBatch;
-		public static volatile World world;
+		public static volatile World world = null;
 		public static float currentTime;
 		public static bool paused;
 		//interface variables
@@ -42,18 +42,21 @@ namespace OctoConcurrency
 
 			separatedInitialization();
 
-			isDown = false;
-			launched = false;
-
 		}
 
 		/**
 		 * Initialize or reinitialize the game
 		 **/
 		private void separatedInitialization(){
+
+			if(world != null){
+				world.stopThreads();
+			}
 			paused = true;
 			world = new World(300, 200, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight, 60);
 			currentTime = 0;
+			isDown = false;
+			launched = false;
 		}
 
 		/// <summary>
@@ -146,7 +149,9 @@ namespace OctoConcurrency
 			}
 
 			foreach(Entity ent in world.Entities){
-				ent.draw(spriteBatch, world.EntityTexture);
+				if(ent.active()){
+					ent.draw(spriteBatch, world.EntityTexture);
+				}
 			}
 			spriteBatch.End();
 		}
