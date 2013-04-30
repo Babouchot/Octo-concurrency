@@ -69,7 +69,7 @@ namespace OctoConcurrency
 				toProcess.AddRange(toProcessLater);
 				toProcessLater.Clear();
 
-				Console.Out.WriteLine("cout : " + toProcess.Count);
+				Console.Out.WriteLine("count : " + toProcess.Count);
 			}
 		}
 

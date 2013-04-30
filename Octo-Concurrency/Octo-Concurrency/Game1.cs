@@ -19,13 +19,15 @@ namespace OctoConcurrency
 	{
 		GraphicsDeviceManager graphics;
 
-		//Drawing variables
-		SpriteBatch spriteBatch;
-		World world;
-
+		//Static variables
+		public static SpriteBatch spriteBatch;
+		public static volatile World world;
+		public static float currentTime;
+		public static bool paused;
 		//interface variables
-		private bool paused;
+
 		private bool isDown;
+		private bool launched;
 
 		public Game1 ()
 		{
@@ -39,6 +41,10 @@ namespace OctoConcurrency
 			graphics.ApplyChanges();
 
 			separatedInitialization();
+
+			isDown = false;
+			launched = false;
+
 		}
 
 		/**
@@ -47,6 +53,7 @@ namespace OctoConcurrency
 		private void separatedInitialization(){
 			paused = true;
 			world = new World(300, 200, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight, 60);
+			currentTime = 0;
 		}
 
 		/// <summary>
@@ -60,6 +67,7 @@ namespace OctoConcurrency
 			// TODO: Add your initialization logic here
 			base.Initialize ();
 			Console.WriteLine("Simulation is paused : press 'P' to resume (and to pause again)");
+			//world.startThreads();
 		}
 
 		/// <summary>
@@ -85,6 +93,14 @@ namespace OctoConcurrency
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Update (GameTime gameTime)
 		{
+
+			if(!launched && Keyboard.GetState().IsKeyDown(Keys.L)){
+				world.startThreads();
+				launched = true;
+
+			}
+			currentTime += gameTime.ElapsedGameTime.Milliseconds;
+
 			if (Keyboard.GetState().IsKeyDown(Keys.Escape)) {
 				Exit ();
 			}
@@ -129,6 +145,9 @@ namespace OctoConcurrency
 				                       Color.White);*/
 			}
 
+			foreach(Entity ent in world.Entities){
+				ent.draw(spriteBatch, world.EntityTexture);
+			}
 			spriteBatch.End();
 		}
 	}

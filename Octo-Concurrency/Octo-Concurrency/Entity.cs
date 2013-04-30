@@ -6,22 +6,23 @@ using System.Collections.Generic;
 namespace OctoConcurrency
 {
 	/**
-	 * Entity class, represent a moving, living entity from the game
+	 * Entity class, represthis a moving, living Entity from the game
 	 **/
 	public class Entity : OctoConcurrency.Obstacle
 	{
 		private Vector2 position;
 		private Node destination;
-		//The radius of the entity, used to know how mush space the entity occupies
+		//The radius of the Entity, used to know how mush space the Entity occupies
 		private double radius;
 		private float maxSpeed;
-	
+		private float lastUpdateTime;
 		private int nbLastMoves = 20;
+		private volatile bool toRemove;
 		private List<Vector2> lastMoves;
 
 
 		/**
-		 * Create a new entity with the given parameters
+		 * Create a new Entity with the given parameters
 		 * The default radius and maxiSpeed may change
 		 **/
 		public Entity(Node dest, Vector2 position, int rad = 20, float maxiSpeed = 0.1f) {
@@ -29,8 +30,9 @@ namespace OctoConcurrency
 			radius = rad;
 			this.destination = dest;
 			maxSpeed = maxiSpeed;
-
+			lastUpdateTime = 0;
 			lastMoves = new List<Vector2>(nbLastMoves);
+			toRemove = false;
 		}
 
 
@@ -51,7 +53,7 @@ namespace OctoConcurrency
 		}
 
 		/**
-		 * Check if the entity is on its destination <br>
+		 * Check if the Entity is on its destination <br>
 		 * Return true if the destination has been reached
 		 **/
 		public bool destinationReached(){
@@ -102,7 +104,7 @@ namespace OctoConcurrency
 
 
 		/**
-		 * Check if the entity is stuck by calculating the total motion ober the last X move <br>
+		 * Check if the Entity is stuck by calculating the total motion ober the last X move <br>
 		 * And by cheking if it is to small
 		 **/
 		public bool checkIfStuck(){
@@ -115,7 +117,7 @@ namespace OctoConcurrency
 		}
 
 		/**
-		 * Move the entity to its new position
+		 * Move the Entity to its new position
 		 **/
 		public void move(Vector2 newPos){
 
@@ -129,7 +131,7 @@ namespace OctoConcurrency
 		}
 
 		/*
-		 * Check if the moving entity will collide with this
+		 * Check if the moving Entity will collide with this
 		 **/
 		public bool collide(Vector2 oldPos, Vector2 newPos) {
 			if (Vector2.Distance(position, newPos) < radius){
@@ -141,19 +143,103 @@ namespace OctoConcurrency
 		}
 
 		/**
-		 * Draw the entity at its position with the given texture
+		 * Draw the Entity at its position with the given texture
 		 **/
 		public void draw(SpriteBatch spritebatch, Texture2D texture){
-			Vector2 adjustedPos = new Vector2(position.X - texture.Width/2, position.Y - texture.Height/2);
-			spritebatch.Draw (texture, adjustedPos, Color.White);
+			//spritebatch.Begin();
+			if(!toRemove){
+				Vector2 adjustedPos = new Vector2(position.X - texture.Width/2, position.Y - texture.Height/2);
+				spritebatch.Draw (texture, adjustedPos, Color.White);
+			}
+
+			//spritebatch.End();
 		}
 
-		public void debugDrawDestination(SpriteBatch spritebatch){
+		/*public void debugDrawDestination(SpriteBatch spritebatch){
 			//debug draw for the pathfinding
 			
 			Texture2D wallText = new Texture2D(spritebatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
 			wallText.SetData(new[]{Color.White});
 			GeometryTools.DrawLine(spritebatch, wallText, 1, Color.Blue, position, destination.Position);
+		}*/
+
+
+		public void autonomousUpdate(){
+
+			//Lock everything
+
+			while(!toRemove){
+
+				if(!Game1.paused){
+
+					float rotation;
+					bool left;
+					Vector2 nextPos;
+					if(lastUpdateTime == 0){
+						lastUpdateTime = Game1.currentTime -10;
+					}
+					float timeSinceLastUpdate = Game1.currentTime - lastUpdateTime;
+					lastUpdateTime = Game1.currentTime;
+					
+					
+					//If stuck relauch the pathfinding to find another way
+					if(this.checkIfStuck()){
+						this.Destination = Game1.world.Pathfinder.findClosestSubGoal(this.Position, Game1.world, this.Destination);
+					}
+					
+					rotation = 0.0f;
+					left = false;
+					//Try to move in several directions, once right, once left, the further right...
+					
+					nextPos = this.calculateNextPos(rotation, timeSinceLastUpdate);
+					
+					while(nextPos.Length() > 0 && (Game1.world.isCollidingWithObstacle(this.Position, nextPos)
+					                               || Game1.world.isCollidingWithEntities(this, nextPos))){
+						rotation *= -1;
+						if(left){
+							rotation += 0.2f;
+						}
+						left = !left;
+						nextPos = this.calculateNextPos(rotation, timeSinceLastUpdate);
+					}
+					
+					//if no move is possible, the Entity stays where it is
+					if(nextPos.Length() == 0){
+						nextPos = this.Position;
+					}
+					
+					this.move(nextPos);
+					
+					//Destination reached, remove the Entity from the world
+					if(this.destinationReached()){
+						//if final objective reached
+						if(this.Destination.OutNodes.Count == 0){
+							toRemove = true;
+						} else {
+							this.Destination = Game1.world.Pathfinder.findNextNode(this.Destination);
+						}
+						
+					}
+					
+					if(toRemove){
+						//remove Entity from the list (in a secure fashion) and stop Thread
+						int index = Game1.world.Entities.IndexOf(this);
+						//Game1.world.Entities.Remove(this);
+						Game1.world.Threads.RemoveAt(index);
+					}
+					
+					//this.draw(Game1.spriteBatch, Game1.world.EntityTexture);
+
+				}
+			
+			}
+		}
+
+		public bool active(){
+			return toRemove;
+		}
+		public void requestStop(){
+			toRemove = true;
 		}
 	}
 }

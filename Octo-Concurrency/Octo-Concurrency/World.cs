@@ -2,6 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace OctoConcurrency
 {
@@ -19,6 +20,7 @@ namespace OctoConcurrency
 		private Texture2D entityTexture;
 		private Texture2D obstacleTexture;
 		private Texture2D objectiveTexture;
+		private List<Thread> threads;
 
 		private PathFinder pathFinder;
 
@@ -68,8 +70,21 @@ namespace OctoConcurrency
 				ent.Destination = pathFinder.findClosestSubGoal(ent.Position, this);
 			}
 
+			threads = new List<Thread>();
+			foreach(Entity enti in entities){
 
+				Thread t = new Thread(enti.autonomousUpdate);
+				threads.Add(t);
 
+			}
+
+		}
+
+		public void startThreads(){
+			foreach(Thread thread in threads){
+				thread.Start();
+			}
+			Console.WriteLine("Threads started");
 		}
 
 		public Vector2 Objective {
@@ -90,57 +105,9 @@ namespace OctoConcurrency
 		 **/
 		public void updateWorld(float timeSinceLastUpdate) {
 
-			float rotation;
-			bool left;
-			Vector2 nextPos;
-
-			List<Entity> toRemove = new List<Entity>();
-
-			foreach (Entity ent in entities){
-
-				//If stuck relauch the pathfinding to find another way
-				if(ent.checkIfStuck()){
-					ent.Destination = pathFinder.findClosestSubGoal(ent.Position, this, ent.Destination);
-				}
-
-				rotation = 0.0f;
-				left = false;
-				//Try to move in several directions, once right, once left, the further right...
-
-				nextPos = ent.calculateNextPos(rotation, timeSinceLastUpdate);
-
-				while(nextPos.Length() > 0 && (isCollidingWithObstacle(ent.Position, nextPos)
-				               || isCollidingWithEntities(ent, nextPos))){
-					rotation *= -1;
-					if(left){
-						rotation += 0.2f;
-					}
-					left = !left;
-					nextPos = ent.calculateNextPos(rotation, timeSinceLastUpdate);
-				}
-
-				//if no move is possible, the entity stays where it is
-				if(nextPos.Length() == 0){
-					nextPos = ent.Position;
-				}
-
-				ent.move(nextPos);
-
-				//Destination reached, remove the entity from the world
-				if(ent.destinationReached()){
-					//if final objective reached
-					if(ent.Destination.OutNodes.Count == 0){
-						toRemove.Add(ent);
-					} else {
-						ent.Destination = pathFinder.findNextNode(ent.Destination);
-					}
-
-				}
-			}
-
-			foreach(Entity ent in toRemove){
-				entities.Remove(ent);
-			}
+			/*foreach (Entity ent in entities){
+				ent.autonomousUpdate();			
+			}*/
 		}
 
 		/**
@@ -159,7 +126,7 @@ namespace OctoConcurrency
 		public bool isCollidingWithEntities(Entity ent, Vector2 nextPos){
 
 			foreach(Entity e in entities){
-				if(ent != e && e.collide(ent.Position, nextPos)){
+				if(e.active() && ent != e && e.collide(ent.Position, nextPos)){
 					return true;
 				}
 			}
@@ -168,6 +135,7 @@ namespace OctoConcurrency
 
 		public List<Entity> Entities {
 			get { return entities; }
+			set { entities = value ; }
 		}
 
 		public List<Obstacle> Obstacles {
@@ -178,6 +146,18 @@ namespace OctoConcurrency
 			get { return size; }
 		}
 
+		public PathFinder Pathfinder {
+			get { return pathFinder; }
+		}
+
+		public Texture2D EntityTexture {
+			get { return entityTexture; }
+		}
+
+		public List<Thread> Threads {
+			get { return threads; }
+		}
+
 		/**
 		 * Draw all the world elements
 		 **/
@@ -185,15 +165,6 @@ namespace OctoConcurrency
 
 			foreach (Obstacle obs in obstacles){
 				obs.draw(spritebatch, obstacleTexture);
-			}
-
-			foreach (Entity ent in entities){
-				ent.draw(spritebatch, entityTexture);
-				//debugDraw for the stuck problem
-				if(ent.checkIfStuck()){
-					ent.debugDrawDestination(spritebatch);
-				}
-
 			}
 
 			Vector2 adjustedObj = new Vector2(objective.X - objectiveTexture.Width/2, objective.Y - objectiveTexture.Height/2);
