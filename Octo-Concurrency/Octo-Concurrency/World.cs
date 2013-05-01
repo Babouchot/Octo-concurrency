@@ -13,7 +13,7 @@ namespace OctoConcurrency
 	 **/
 	public class World
 	{
-		private List<Entity> entities;
+		private volatile List<Entity> entities;
 		private List<Obstacle> obstacles;
 		private Vector2 objective;
 		private Vector2 size;
@@ -22,12 +22,29 @@ namespace OctoConcurrency
 		private Texture2D objectiveTexture;
 		private List<Thread> threads;
 
-		public List<Entity> entitiesToRemove;
+		//zones to lock before update
+		public volatile List<List<Object>> lockZones;
+		private int zoneWidth;
+		private int zoneHeight;
+		private const int nbZonesPerSide = 10;
 
 		private PathFinder pathFinder;
 
 		public World (int xObjective, int yObjective, int width = 800, int height = 800, int nbEntities = 30)
 		{
+			lockZones = new List<List<object>>();
+
+			for(int i = 0; i < nbZonesPerSide; ++i){
+				lockZones.Add(new List<object>());
+				for(int j = 0; j < nbZonesPerSide; ++j){
+
+					lockZones[i].Add(new object());
+				}
+			}
+
+			zoneWidth = width/nbZonesPerSide;
+			zoneHeight = height/nbZonesPerSide;
+
 			entities = new List<Entity>();
 			obstacles = new List<Obstacle>();
 
@@ -35,8 +52,6 @@ namespace OctoConcurrency
 			size = new Vector2(width,height);
 
 			Node destination = new Node(new Vector2(xObjective, yObjective));
-
-			entitiesToRemove = new List<Entity>();
 
 			Random r = new Random();
 
@@ -52,7 +67,7 @@ namespace OctoConcurrency
 			}
 
 			//Create the pathFinder here
-			pathFinder = new PathFinder(this);
+			pathFinder = new PathFinder(this, nbZonesPerSide);
 
 			//Add some entities to the world
 
@@ -61,13 +76,13 @@ namespace OctoConcurrency
 			for(int i = 0; i < nbEntities; ++i){
 
 				pos = new Vector2(r.Next((int)size.X), r.Next((int)size.Y));
-				ent = new Entity(destination, pos);
+				ent = new Entity(destination, pos, zoneWidth, zoneHeight);
 
 				while(isCollidingWithObstacle(ent.Position, ent.Position) 
 				      || isCollidingWithEntities(ent, ent.Position)){
 
 					pos = new Vector2(r.Next((int)size.X), r.Next((int)size.Y));
-					ent = new Entity(destination, pos);
+					ent = new Entity(destination, pos, zoneWidth, zoneHeight);
 				}
 				entities.Add(ent);
 				//find the first goal of each entities
@@ -124,11 +139,6 @@ namespace OctoConcurrency
 		 **/
 		public void updateWorld(float timeSinceLastUpdate) {
 
-			foreach(Entity ent in entitiesToRemove){
-				entities.Remove(ent);
-			}
-
-			entitiesToRemove.Clear();
 
 			/*foreach (Entity ent in entities){
 				ent.autonomousUpdate();			
@@ -151,7 +161,11 @@ namespace OctoConcurrency
 		public bool isCollidingWithEntities(Entity ent, Vector2 nextPos){
 
 			foreach(Entity e in entities){
-				if(e.active() && ent != e && e.collide(ent.Position, nextPos)){
+
+				if(Math.Abs(e.findCurrentZone().X - ent.findCurrentZone().X) <=1 
+				   && Math.Abs(e.findCurrentZone().Y - ent.findCurrentZone().Y) <=1
+				   && e.active() && ent != e && e.collide(ent.Position, nextPos)){
+
 					return true;
 				}
 			}
@@ -181,6 +195,10 @@ namespace OctoConcurrency
 
 		public List<Thread> Threads {
 			get { return threads; }
+		}
+
+		public int NbZonesPerSide {
+			get { return nbZonesPerSide; }
 		}
 
 		/**

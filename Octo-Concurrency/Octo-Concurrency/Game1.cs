@@ -24,8 +24,8 @@ namespace OctoConcurrency
 		public static volatile World world = null;
 		public static float currentTime;
 		public static bool paused;
-		//interface variables
 
+		//interface variables
 		private bool isDown;
 		private bool launched;
 
@@ -102,7 +102,6 @@ namespace OctoConcurrency
 				launched = true;
 
 			}
-			currentTime += gameTime.ElapsedGameTime.Milliseconds;
 
 			if (Keyboard.GetState().IsKeyDown(Keys.Escape)) {
 				Exit ();
@@ -122,6 +121,7 @@ namespace OctoConcurrency
 				LoadContent();
 			}
 			if(!paused){
+				currentTime += gameTime.ElapsedGameTime.Milliseconds;
 				world.updateWorld(gameTime.ElapsedGameTime.Milliseconds);
 				//I moved that one up here hopping it will stop the gameTime incrementation when paused
 				//Console.Out.WriteLine("FPS : " + (1.0f/gameTime.ElapsedGameTime.Milliseconds)*1000);

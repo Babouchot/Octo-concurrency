@@ -14,7 +14,7 @@ namespace OctoConcurrency
 		 * Initialize the pathfinder and the navigation graph
 		 *
 		 **/
-		public PathFinder (World world){
+		public PathFinder (World world, int nbNodesPerSide){
 
 			nodes = new List<Node>();
 			List<Node> remainingNodes = new List<Node>();// = ALL
@@ -29,8 +29,8 @@ namespace OctoConcurrency
 
 			objective = new Node(world.Objective);
 
-			for(int x = 0; x < size.X; x += (int)size.X/10){
-				for(int y = 0; y < size.Y; y += (int)size.Y/10){
+			for(int x = 0; x < size.X; x += (int)size.X/nbNodesPerSide){
+				for(int y = 0; y < size.Y; y += (int)size.Y/nbNodesPerSide){
 					remainingNodes.Add(new Node(new Vector2(x, y)));
 				}
 			}
