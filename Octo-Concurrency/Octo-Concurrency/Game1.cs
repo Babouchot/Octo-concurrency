@@ -97,12 +97,6 @@ namespace OctoConcurrency
 		protected override void Update (GameTime gameTime)
 		{
 
-			if(!launched && Keyboard.GetState().IsKeyDown(Keys.L)){
-				world.startThreads();
-				launched = true;
-
-			}
-
 			if (Keyboard.GetState().IsKeyDown(Keys.Escape)) {
 				Exit ();
 			}
@@ -113,6 +107,12 @@ namespace OctoConcurrency
 			if(isDown && !Keyboard.GetState().IsKeyDown(Keys.P)) {
 				isDown = false;
 				paused = !paused;
+
+				if(!launched){
+					world.startThreads();
+					launched = true;
+					
+				}
 			}
 
 			// Reset l'état de la simulation

@@ -118,7 +118,7 @@ namespace OctoConcurrency
 			foreach( Vector2 move in lastMoves ){
 				globalMove += move;
 			}
-			return lastMoves.Count >= nbLastMoves/2 && globalMove.Length() < radius / 2;
+			return lastMoves.Count >= nbLastMoves/2 && globalMove.Length() < radius;
 		}
 
 		/**
@@ -173,6 +173,8 @@ namespace OctoConcurrency
 		 * Update the entity
 		 **/
 		private void updateEntity(){
+
+			Console.WriteLine("Entoty update start");
 
 			if(!Game1.paused){
 				
@@ -236,7 +238,10 @@ namespace OctoConcurrency
 				
 			}
 
+			Console.WriteLine("Entoty update stop");
+
 		}
+
 
 		/**
 		 * The running thread method for an entity

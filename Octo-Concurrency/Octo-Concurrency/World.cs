@@ -162,9 +162,9 @@ namespace OctoConcurrency
 
 			foreach(Entity e in entities){
 
-				if(Math.Abs(e.findCurrentZone().X - ent.findCurrentZone().X) <=1 
+				if(e.active() && Math.Abs(e.findCurrentZone().X - ent.findCurrentZone().X) <=1 
 				   && Math.Abs(e.findCurrentZone().Y - ent.findCurrentZone().Y) <=1
-				   && e.active() && ent != e && e.collide(ent.Position, nextPos)){
+				   && ent != e && e.collide(ent.Position, nextPos)){
 
 					return true;
 				}
