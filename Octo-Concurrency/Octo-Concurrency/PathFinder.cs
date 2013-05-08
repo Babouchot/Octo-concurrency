@@ -43,9 +43,9 @@ namespace OctoConcurrency
 				//pour chaque nodes n de toProcess,
 				//on doit chercher les nodes accessible l dans remainingNode
 				foreach( Node outNode in toProcess ){
-					Console.Out.WriteLine("toProcess : " + toProcess.Count);
+
 					foreach( Node inNode in remainingNodes ){
-						Console.Out.WriteLine("remaining : "+remainingNodes.Count);
+
 						if(!world.isCollidingWithObstacle(outNode.Position, inNode.Position)){
 							//Chaque node accessible est mise de coté pour le prochain traitement
 							if(toProcessLater.IndexOf(inNode) < 0){
@@ -69,7 +69,6 @@ namespace OctoConcurrency
 				toProcess.AddRange(toProcessLater);
 				toProcessLater.Clear();
 
-				Console.Out.WriteLine("count : " + toProcess.Count);
 			}
 		}
 

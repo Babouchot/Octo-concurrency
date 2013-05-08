@@ -174,7 +174,7 @@ namespace OctoConcurrency
 		 **/
 		private void updateEntity(){
 
-			Console.WriteLine("Entoty update start");
+			Console.WriteLine("Entity update start");
 
 			if(!Game1.paused){
 				
@@ -238,7 +238,7 @@ namespace OctoConcurrency
 				
 			}
 
-			Console.WriteLine("Entoty update stop");
+			Console.WriteLine("Entity update stop");
 
 		}
 

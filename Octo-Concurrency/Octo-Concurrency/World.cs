@@ -110,6 +110,11 @@ namespace OctoConcurrency
 			foreach(Entity ent in entities){
 				ent.requestStop();
 			}
+	
+			//Rends la main aux threads pour qu'ils se stoppent.
+			Thread.Sleep(100);
+
+			Console.WriteLine("remaining threads will be killed");
 
 			foreach(Thread th in threads){
 				th.Abort();
@@ -138,11 +143,7 @@ namespace OctoConcurrency
 		 * Update the game world by moving each of the entities toward their destination
 		 **/
 		public void updateWorld(float timeSinceLastUpdate) {
-
-
-			/*foreach (Entity ent in entities){
-				ent.autonomousUpdate();			
-			}*/
+			//Old update method, should not be used
 		}
 
 		/**
