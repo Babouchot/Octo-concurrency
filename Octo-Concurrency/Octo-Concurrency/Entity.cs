@@ -273,6 +273,7 @@ namespace OctoConcurrency
 		}
 
 
+
 		/**
 		 * Lock all the zones surrounding the current zone of the entity
 		 **/
@@ -281,8 +282,9 @@ namespace OctoConcurrency
 			Vector2 findCurrentZone /*= findCurrentZone()*/;
 			int zoneX = (int) findCurrentZone.X;
 			int zoneY = (int) findCurrentZone.Y;
-			
-			/*List<List<Object> > zones = Game1.world.lockZones;
+
+			World world = Game1.world;
+			List<List<Mutex> > zones = Game1.world.lockZones;
 			
 			int xFirst = Math.Max(0, zoneX - 1);
 			int yFirst = Math.Max(0, zoneY - 1);
@@ -292,147 +294,21 @@ namespace OctoConcurrency
 			for(int x = xFirst; x <= xLast; ++x){
 
 				for(int y = yFirst; y <= yLast; ++y){
-					lock(zones[x][y]){
-
-					}
+					zones[x][y].WaitOne();
 				}
-			}*/
-
-			lockXm1Ym1(zoneX, zoneY);
-			
-		}
-
-		private void lockXm1Ym1(int x, int y){
-
-			List<List<Object> > zones = Game1.world.lockZones;
-			
-			if(x - 1 >= 0 && y - 1 >= 0){
-				lock(zones[x - 1][y - 1]){
-					lockXm1Y(x, y);
-				}
-			} else {
-				lockXm1Y(x, y);
 			}
 
-		}
+			updateEntity();
 
-		private void lockXm1Y(int x, int y){
-			
-			List<List<Object> > zones = Game1.world.lockZones;
-			
-			if(x - 1 >= 0){
-				lock(zones[x - 1][y]){
-					lockXm1Yp1(x, y);
+			for(int x = xFirst; x <= xLast; ++x){
+				
+				for(int y = yFirst; y <= yLast; ++y){
+					zones[x][y].ReleaseMutex();
 				}
-			} else {
-				lockXm1Yp1(x, y);
 			}
-
+			
 		}
 
-		private void lockXm1Yp1(int x, int y){
-
-			World world = Game1.world;
-			
-			List<List<Object> > zones = Game1.world.lockZones;
-			
-			if(x - 1 >= 0 && y + 1 < world.NbZonesPerSide){
-				lock(zones[x - 1][y + 1]){
-					lockXYm1(x, y);
-				}
-			} else {
-				lockXYm1(x, y);
-			}
-
-		}
-
-		private void lockXYm1(int x, int y){
-			
-			List<List<Object> > zones = Game1.world.lockZones;
-			
-			if(y - 1 >= 0){
-				lock(zones[x][y - 1]){
-					lockXY(x, y);
-				}
-			} else {
-				lockXY(x, y);
-			}
-
-		}
-
-		private void lockXY(int x, int y){
-			
-			List<List<Object> > zones = Game1.world.lockZones;
-
-			lock(zones[x][y]){
-				lockXYp1(x, y);
-			}
-
-		}
-
-		private void lockXYp1(int x, int y){
-
-			World world = Game1.world;
-			
-			List<List<Object> > zones = Game1.world.lockZones;
-			
-			if(y + 1 < world.NbZonesPerSide){
-				lock(zones[x][y + 1]){
-					lockXp1Ym1(x, y);
-				}
-			} else {
-				lockXp1Ym1(x, y);
-			}
-
-		}
-
-		private void lockXp1Ym1(int x, int y){
-
-			World world = Game1.world;
-			
-			List<List<Object> > zones = Game1.world.lockZones;
-			
-			if(x + 1 < world.NbZonesPerSide && x - 1 >= 0){
-				lock(zones[x + 1][y - 1]){
-					lockXp1Y(x, y);
-				}
-			} else {
-				lockXp1Y(x, y);
-			}
-
-		}
-
-		private void lockXp1Y(int x, int y){
-
-			World world = Game1.world;
-			
-			List<List<Object> > zones = Game1.world.lockZones;
-			
-			if(x + 1 < world.NbZonesPerSide){
-				lock(zones[x + 1][y]){
-					lockXp1Yp1(x, y);
-				}
-			} else {
-				lockXp1Yp1(x, y);
-			}
-
-		}
-
-		private void lockXp1Yp1(int x, int y){
-
-			World world = Game1.world;
-
-			List<List<Object> > zones = Game1.world.lockZones;
-			
-			if(x + 1 < world.NbZonesPerSide && y + 1 < world.NbZonesPerSide){
-				lock(zones[x + 1][y + 1]){
-					updateEntity();
-				}
-			} else {
-				updateEntity();
-			}
-
-		}
 
 
 		/**

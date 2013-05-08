@@ -23,7 +23,7 @@ namespace OctoConcurrency
 		private List<Thread> threads;
 
 		//zones to lock before update
-		public volatile List<List<Object>> lockZones;
+		public volatile List<List<Mutex>> lockZones;
 		private int zoneWidth;
 		private int zoneHeight;
 		private const int nbZonesPerSide = 10;
@@ -32,13 +32,13 @@ namespace OctoConcurrency
 
 		public World (int xObjective, int yObjective, int width = 800, int height = 800, int nbEntities = 30)
 		{
-			lockZones = new List<List<object>>();
+			lockZones = new List<List<Mutex>>();
 
 			for(int i = 0; i < nbZonesPerSide; ++i){
-				lockZones.Add(new List<object>());
+				lockZones.Add(new List<Mutex>());
 				for(int j = 0; j < nbZonesPerSide; ++j){
 
-					lockZones[i].Add(new object());
+					lockZones[i].Add(new Mutex());
 				}
 			}
 
