@@ -15,7 +15,7 @@ namespace OctoConcurrency
 		private Vector2 end;
 		private float radius;
 
-		public Wall(Vector2 startPoint, Vector2 endPoint, float rad = 1){
+		public Wall(Vector2 startPoint, Vector2 endPoint, float rad = 3){
 			start = startPoint;
 			end = endPoint;
 			radius = rad;

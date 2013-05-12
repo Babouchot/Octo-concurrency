@@ -20,10 +20,12 @@ namespace OctoConcurrency
 		GraphicsDeviceManager graphics;
 
 		//Static variables
-		public static SpriteBatch spriteBatch;
-		public static volatile World world = null;
-		public static float currentTime;
-		public static bool paused;
+		private static SpriteBatch spriteBatch;
+		private static volatile World world = null;
+		private static float currentTime;
+		private static bool paused;
+
+
 
 		//interface variables
 		private bool isDown;
@@ -33,8 +35,8 @@ namespace OctoConcurrency
 		{
 			graphics = new GraphicsDeviceManager (this);
 			Content.RootDirectory = "Content";	
-			graphics.PreferredBackBufferWidth = 600;
-			graphics.PreferredBackBufferHeight = 400;
+			graphics.PreferredBackBufferWidth = 640;
+			graphics.PreferredBackBufferHeight = 480;
 			graphics.PreferMultiSampling = false;
 			graphics.IsFullScreen = false;
 
@@ -53,7 +55,7 @@ namespace OctoConcurrency
 				world.stopThreads();
 			}
 			paused = true;
-			world = new World(300, 200, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight, 60);
+			world = new World(300, 200, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight, 300, 10);
 			currentTime = 0;
 			isDown = false;
 			launched = false;
@@ -155,6 +157,35 @@ namespace OctoConcurrency
 			}
 			spriteBatch.End();
 		}
+
+
+
+
+
+		public static SpriteBatch SpriteBatch {
+			get {
+				return spriteBatch;
+			}
+		}
+		
+		public static World World {
+			get {
+				return world;
+			}
+		}
+		
+		public static float CurrentTime {
+			get {
+				return currentTime;
+			}
+		}
+		
+		public static bool Paused {
+			get {
+				return paused;
+			}
+		}
+
 	}
 }
 

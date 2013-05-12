@@ -23,15 +23,18 @@ namespace OctoConcurrency
 		private List<Thread> threads;
 
 		//zones to lock before update
-		public volatile List<List<Mutex>> lockZones;
+		private volatile List<List<Mutex>> lockZones;
 		private int zoneWidth;
 		private int zoneHeight;
-		private const int nbZonesPerSide = 10;
+		private int nbZonesPerSide = 10;
 
 		private PathFinder pathFinder;
 
-		public World (int xObjective, int yObjective, int width = 800, int height = 800, int nbEntities = 30)
+		public World (int xObjective, int yObjective, int width = 800, int height = 800,
+		              int nbEntities = 30, int nbZonesPath = 10)
 		{
+
+			nbZonesPerSide = nbZonesPath;
 			lockZones = new List<List<Mutex>>();
 
 			for(int i = 0; i < nbZonesPerSide; ++i){
@@ -200,6 +203,12 @@ namespace OctoConcurrency
 
 		public int NbZonesPerSide {
 			get { return nbZonesPerSide; }
+		}
+
+		public List<List<Mutex>> LockZones {
+			get {
+				return lockZones;
+			}
 		}
 
 		/**

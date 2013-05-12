@@ -176,21 +176,21 @@ namespace OctoConcurrency
 
 			Console.WriteLine("Entity update start");
 
-			if(!Game1.paused){
+			if(!Game1.Paused){
 				
 				float rotation;
 				bool left;
 				Vector2 nextPos;
 				if(lastUpdateTime == 0){
-					lastUpdateTime = Game1.currentTime -10;
+					lastUpdateTime = Game1.CurrentTime -10;
 				}
-				float timeSinceLastUpdate = Game1.currentTime - lastUpdateTime;
-				lastUpdateTime = Game1.currentTime;
+				float timeSinceLastUpdate = Game1.CurrentTime - lastUpdateTime;
+				lastUpdateTime = Game1.CurrentTime;
 				
 				
 				//If stuck relauch the pathfinding to find another way
 				if(this.checkIfStuck()){
-					this.Destination = Game1.world.Pathfinder.findClosestSubGoal(this.Position, Game1.world, this.Destination);
+					this.Destination = Game1.World.Pathfinder.findClosestSubGoal(this.Position, Game1.World, this.Destination);
 				}
 				
 				rotation = 0.0f;
@@ -199,8 +199,8 @@ namespace OctoConcurrency
 				
 				nextPos = this.calculateNextPos(rotation, timeSinceLastUpdate);
 				
-				while(nextPos.Length() > 0 && (Game1.world.isCollidingWithObstacle(this.Position, nextPos)
-				                               || Game1.world.isCollidingWithEntities(this, nextPos))){
+				while(nextPos.Length() > 0 && (Game1.World.isCollidingWithObstacle(this.Position, nextPos)
+				                               || Game1.World.isCollidingWithEntities(this, nextPos))){
 					rotation *= -1;
 					if(left){
 						rotation += 0.2f;
@@ -222,20 +222,11 @@ namespace OctoConcurrency
 					if(this.Destination.OutNodes.Count == 0){
 						toRemove = true;
 					} else {
-						this.Destination = Game1.world.Pathfinder.findNextNode(this.Destination);
+						this.Destination = Game1.World.Pathfinder.findNextNode(this.Destination);
 					}
 					
 				}
-				
-				if(toRemove){
-					//remove Entity from the list (in a secure fashion) and stop Thread
-					//int index = Game1.world.Entities.IndexOf(this);
-					//Game1.world.entitiesToRemove.Add(this);
-					//Game1.world.Threads.RemoveAt(index);
-				}
-				
-				//this.draw(Game1.spriteBatch, Game1.world.EntityTexture);
-				
+
 			}
 
 			Console.WriteLine("Entity update stop");
@@ -279,12 +270,12 @@ namespace OctoConcurrency
 		 **/
 		private void lockSurroundingZonesAndUpdate(){
 			
-			Vector2 findCurrentZone /*= findCurrentZone()*/;
-			int zoneX = (int) findCurrentZone.X;
-			int zoneY = (int) findCurrentZone.Y;
+			Vector2 currentZone = findCurrentZone();
+			int zoneX = (int) currentZone.X;
+			int zoneY = (int) currentZone.Y;
 
-			World world = Game1.world;
-			List<List<Mutex> > zones = Game1.world.lockZones;
+			World world = Game1.World;
+			List<List<Mutex> > zones = Game1.World.LockZones;
 			
 			int xFirst = Math.Max(0, zoneX - 1);
 			int yFirst = Math.Max(0, zoneY - 1);
