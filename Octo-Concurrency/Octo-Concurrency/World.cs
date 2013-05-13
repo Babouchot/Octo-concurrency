@@ -31,7 +31,7 @@ namespace OctoConcurrency
 		private PathFinder pathFinder;
 
 		public World (int xObjective, int yObjective, int width = 800, int height = 800,
-		              int nbEntities = 30, int nbZonesPath = 10)
+		              int nbEntities = 30, int nbZonesPath = 20)
 		{
 
 			nbZonesPerSide = nbZonesPath;
@@ -62,12 +62,60 @@ namespace OctoConcurrency
 
 			Wall wall;
 			Vector2 startWall, endWall;
-			for(int i = 0; i < 4; ++i){
+			/*for(int i = 0; i < 4; ++i){
 				startWall = new Vector2(r.Next((int)size.X), r.Next((int)size.Y));
 				endWall = new Vector2(r.Next((int)size.X), r.Next((int)size.Y));
 				wall = new Wall(startWall, endWall);
 				obstacles.Add(wall);
-			}
+			}*/
+
+			//surrounding walls
+			startWall = new Vector2(10,10);
+			endWall = new Vector2(10, height - 10);
+			wall = new Wall(startWall, endWall);
+			obstacles.Add(wall);
+			startWall = new Vector2(width - 10, height - 10);
+			wall = new Wall(startWall, endWall);
+			obstacles.Add(wall);
+			endWall = new Vector2(width - 10, 10);
+			wall = new Wall(startWall, endWall);
+			obstacles.Add(wall);
+			startWall = new Vector2(10,10);
+			wall = new Wall(startWall, endWall);
+			obstacles.Add(wall);
+
+			//objective
+			int tempW = 100;
+			objective.X = width/2;
+			objective.Y = tempW/2;
+
+
+			//in walls
+			startWall = new Vector2(width/2 - tempW/2, height - tempW);
+			endWall = new Vector2(tempW, height - tempW);
+			wall = new Wall(startWall, endWall);
+			obstacles.Add(wall);
+			startWall = new Vector2(tempW, tempW);
+			wall = new Wall(startWall, endWall);
+			obstacles.Add(wall);
+			endWall = new Vector2(width - tempW, tempW);
+			wall = new Wall(startWall, endWall);
+			obstacles.Add(wall);
+			startWall = new Vector2(width - tempW, height - tempW);
+			wall = new Wall(startWall, endWall);
+			obstacles.Add(wall);
+			endWall = new Vector2(width/2 + tempW/2, height - tempW);
+			wall = new Wall(startWall, endWall);
+			obstacles.Add(wall);
+
+			//Stall
+			startWall = new Vector2(width/2 - tempW/4, height - tempW - tempW/8);
+			endWall = new Vector2(width/2 + tempW/4, height - tempW + tempW/8);
+			wall = new Wall(startWall, endWall);
+			obstacles.Add(wall);
+
+
+
 
 			//Create the pathFinder here
 			pathFinder = new PathFinder(this, nbZonesPerSide);
@@ -78,13 +126,13 @@ namespace OctoConcurrency
 			Vector2 pos;
 			for(int i = 0; i < nbEntities; ++i){
 
-				pos = new Vector2(r.Next((int)size.X), r.Next((int)size.Y));
+				pos = new Vector2(r.Next((int)size.X-30)+15, r.Next((int)size.Y-30)+15);
 				ent = new Entity(destination, pos, zoneWidth, zoneHeight);
 
 				while(isCollidingWithObstacle(ent.Position, ent.Position) 
 				      || isCollidingWithEntities(ent, ent.Position)){
 
-					pos = new Vector2(r.Next((int)size.X), r.Next((int)size.Y));
+					pos = new Vector2(r.Next((int)size.X-30)+15, r.Next((int)size.Y-30)+15);
 					ent = new Entity(destination, pos, zoneWidth, zoneHeight);
 				}
 				entities.Add(ent);
