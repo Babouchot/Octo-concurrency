@@ -1,0 +1,24 @@
+
+const SIZE = 2
+
+ZONE = ZONE[0][0],
+ZONE[x:-1..SIZE][y:-1..SIZE] = (
+	when (x>0) && (x<SIZE) && (y>0) && (y<SIZE) lock->release->ZONE).
+
+ENTITY_FIRST = ENTITY[0][0],
+ENTITY[x:0..SIZE][y:0..SIZE] = (
+zone[x-1][y-1].lock->zone[x-1][y].lock->zone[x-1][y+1].lock
+->zone[x][y-1].lock->zone[x][y].lock->zone[x][y+1].lock
+->zone[x+1][y-1].lock->zone[x+1][y].lock->zone[x+1][y+1].lock
+->act
+->zone[x-1][y-1].release->zone[x-1][y].release->zone[x-1][y+1].release
+->zone[x][y-1].release->zone[x][y].release->zone[x][y+1].release
+->zone[x+1][y-1].release->zone[x+1][y].release->zone[x+1][y+1].release
+->ENTITY[x][y]).
+
+||RUN= (forall[i:0..SIZE-1](
+			forall[j:0..SIZE-1](
+				e[i][j]:ENTITY_FIRST
+			)
+		)
+|| {e}::ZONE).
