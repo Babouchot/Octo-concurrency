@@ -109,10 +109,10 @@ namespace OctoConcurrency
 			obstacles.Add(wall);
 
 			//Stall
-			startWall = new Vector2(width/2 - tempW/4, height - tempW - tempW/8);
+			/*startWall = new Vector2(width/2 - tempW/4, height - tempW - tempW/8);
 			endWall = new Vector2(width/2 + tempW/4, height - tempW + tempW/8);
 			wall = new Wall(startWall, endWall);
-			obstacles.Add(wall);
+			obstacles.Add(wall);*/
 
 
 
@@ -148,6 +148,16 @@ namespace OctoConcurrency
 
 			}
 
+		}
+
+		public int getNbActive(){
+
+			int n = 0;
+			foreach(Entity e in entities){
+				n = e.active() ? n + 1 : n;
+			}
+
+			return n;
 		}
 
 		public void startThreads(){

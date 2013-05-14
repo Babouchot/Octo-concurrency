@@ -105,7 +105,8 @@ namespace OctoConcurrency
 
 			//Look for the most direct way
 			foreach(Node nod in outNodes){
-				if((nod.Position - objective.Position).Length() < (closestToEnd.Position - objective.Position).Length()){
+				//if((nod.Position - objective.Position).Length() < (closestToEnd.Position - objective.Position).Length()){
+				if((nod.Position - current.Position).Length() < (closestToEnd.Position - current.Position).Length()){
 					closestToEnd = nod;
 				}
 			}

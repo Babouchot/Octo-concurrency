@@ -55,7 +55,7 @@ namespace OctoConcurrency
 				world.stopThreads();
 			}
 			paused = true;
-			world = new World(300, 200, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight, 400);
+			world = new World(300, 200, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight, 100, 15);
 			currentTime = 0;
 			isDown = false;
 			launched = false;

@@ -87,7 +87,6 @@ namespace OctoConcurrency
 		public Vector2 calculateNextPos(float rotationOffset, double timeSinceLastUpdate){
 
 			if(rotationOffset > 1 || rotationOffset < -1){
-				Console.Out.WriteLine("rotation out of bound");
 				return new Vector2(0,0);
 			}
 
@@ -172,9 +171,7 @@ namespace OctoConcurrency
 		/**
 		 * Update the entity
 		 **/
-		private void updateEntity(){
-
-			Console.WriteLine("Entity update start");
+		private void updateEntity(float timeSinceLastUpdate){
 
 			if(!Game1.Paused){
 				
@@ -184,7 +181,6 @@ namespace OctoConcurrency
 				if(lastUpdateTime == 0){
 					lastUpdateTime = Game1.CurrentTime -10;
 				}
-				float timeSinceLastUpdate = Game1.CurrentTime - lastUpdateTime;
 				lastUpdateTime = Game1.CurrentTime;
 				
 				
@@ -229,8 +225,6 @@ namespace OctoConcurrency
 
 			}
 
-			Console.WriteLine("Entity update stop");
-
 		}
 
 
@@ -242,8 +236,9 @@ namespace OctoConcurrency
 
 			while(!toRemove){
 
+				float timeSinceLastUpdate = Game1.CurrentTime - lastUpdateTime;
 				//Lock everything
-				lockSurroundingZonesAndUpdate();
+				lockSurroundingZonesAndUpdate(timeSinceLastUpdate);
 				Thread.Sleep(50);
 			}
 		}
@@ -268,7 +263,7 @@ namespace OctoConcurrency
 		/**
 		 * Lock all the zones surrounding the current zone of the entity
 		 **/
-		private void lockSurroundingZonesAndUpdate(){
+		private void lockSurroundingZonesAndUpdate(float timeSinceLastUpdate){
 			
 			Vector2 currentZone = findCurrentZone();
 			int zoneX = (int) currentZone.X;
@@ -289,7 +284,7 @@ namespace OctoConcurrency
 				}
 			}
 
-			updateEntity();
+			updateEntity(timeSinceLastUpdate);
 
 			for(int x = xFirst; x <= xLast; ++x){
 				
