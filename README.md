@@ -10,10 +10,10 @@ Folder content :
 	Here is how the project folder you just unzipped is laid out.
 
 		Sources ==> The project code for the sequencial and concurent versions, the files are ".cs" (C#) files
+					| Octo-Concurrency ==> the sources for the concurrent version
+					| Octo-Sequential ==> the sources for the sequential version
 
-		Run-Concurent ==> The binaries needed to run the concurent version of the simulation
-
-		Run-Sequencial ==> The binaries needed to run the sequential version of the simulation
+		Binaries ==> The binaries needed to run the concurent version of the simulation
 
 		FSP.lts ==> Our attempt to prove our scheme to manage concurent ressources
 
