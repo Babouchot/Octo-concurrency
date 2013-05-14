@@ -9,7 +9,7 @@ Folder content :
 
 	Here is how the project folder you just unzipped is laid out.
 
-		Octo-Concurrency ==> The project code, the files are ".cs" (C#) files
+		Sources ==> The project code for the sequencial and concurent versions, the files are ".cs" (C#) files
 
 		Run-Concurent ==> The binaries needed to run the concurent version of the simulation
 
